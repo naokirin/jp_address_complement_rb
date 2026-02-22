@@ -34,3 +34,8 @@ jobs:
 
       - name: Type check (Steep)
         run: bundle exec rake steep
+
+      - name: Verify sig/generated (rbs-inline の生成結果に差分がないこと)
+        run: |
+          bundle exec rake rbs:generate
+          git diff --exit-code sig/generated || (echo "::error::sig/generated に差分があります。bundle exec rake rbs:generate を実行して変更をコミットしてください。" && exit 1)
