@@ -7,6 +7,9 @@ gem "sqlite3", ">= 2.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
+# OpenSSL 3.6.0 での CRL チェックエラー回避（openssl gem 3.1.2+ で CRL がデフォルト無効に）
+gem "openssl", ">= 3.3.1"
+
 # 郵便番号→住所検索（親リポジトリの gem を参照）
 gem "jp_address_complement", path: "../../../"
 
