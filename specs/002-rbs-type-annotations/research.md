@@ -97,6 +97,7 @@ gemspec の `development_dependency` に以下を追加する。
 | `gem_rbs_collection` | 他 gem の型定義取得 | 利用可能な安定版 |
 
 - 実際のバージョンは導入時に `bundle add --group development` 等で確認し、gemspec に記載する。
+- **rbs_collection の設定**: `rbs_collection.yaml`（または gem_rbs_collection の設定）は、Steep 実行時に Rails/ActiveRecord の型が解決できずエラーが出る場合にのみ追加する。rbs-rails のみで足りる場合は不要。
 
 ### Rationale
 - FR-002 / FR-003 で必須。rbs-rails と gem_rbs_collection により、ActiveRecord や Rails 内部の型を参照し、Steep の誤検知を減らす（Clarifications 2026-02-22）。

@@ -18,7 +18,7 @@ Gem を利用する Rails アプリ開発者（またはエディタ・LSP）が
 
 **Acceptance Scenarios**:
 
-1. **Given** gem をインストールした開発者が Steep を設定した時、**When** `steep check` を実行すると、**Then** gem 公開 API（`search_by_postal_code`・`search_by_postal_code_prefix`・`valid_combination?`・`configure`）に関するシグネチャエラーがゼロで終了する。
+1. **Given** gem をインストールした開発者が Steep を設定した時、**When** `steep check` を実行すると、**Then** gem 公開 API（`search_by_postal_code`・`search_by_postal_code_prefix`・`valid_combination?`・`configure`・`configuration`）に関するシグネチャエラーがゼロで終了する。
 2. **Given** gem の `sig/` ディレクトリが存在する時、**When** 利用者が参照すると、**Then** `AddressRecord` の全フィールド（`postal_code`・`pref_code`・`pref`・`city`・`town` 等）の型が明示されている。
 3. **Given** 誤った型の引数（例：`Integer` の郵便番号）を渡すコードを書いた時、**When** Steep でチェックすると、**Then** 型エラーが報告される。
 
@@ -61,7 +61,7 @@ Gem のコントリビューターがコードを変更してプルリクエス�
 - `AddressRecord` は `Data.define` で定義されており `rbs-inline` による自動生成が完全に機能しない場合、`sig/manual/address_record.rbs` に全フィールドの型（`String`・`bool` 等）を手書きする。
 - Steep の型チェックが ActiveRecord や Rails 内部の型まで追跡しようとして誤検知（false positive）が発生する場合は、`Steep::Interface::Builder` のスタブや `# steep:ignore` による局所的な抑制で対処する。
 - `rbs-inline` が生成するシグネチャと、Gem のパブリック API として公開したいシグネチャが乖離する場合（例：内部型の露出）は、`sig/` 内でシグネチャを手動補正する運用を明確にする。
-- Ruby バージョンが `3.2` 以上でのみ動作する `Data.define` の型表現について、Steep 未対応の場合はモンキーパッチ的なアプローチ（型定義のオーバーライド）が必要になることがある。
+- Ruby バージョンが `3.2` 以上でのみ動作する `Data.define` の型表現について、Steep 未対応の場合はモンキーパッチ的なアプローチ（型定義のオーバーライド）が必要になることがある。その場合は**発生時のみ**対応し、通常は `sig/manual/address_record.rbs` の手書き定義で足りる想定とする。
 
 ## Requirements *(mandatory)*
 
@@ -75,7 +75,7 @@ Gem のコントリビューターがコードを変更してプルリクエス�
 - **FR-006**: `steep check` を Rake タスク（例: `rake steep`）として登録し、`bundle exec rake steep` で型チェックを実行できなければならない。
 - **FR-007**: `AddressRecord`（`Data.define` 使用）・`Configuration`・`Normalizer`・`Searcher`・`Repositories::PostalCodeRepository`（インターフェース）・`Repositories::ActiveRecordPostalCodeRepository`・バリデーター・インポーター・ジェネレーターのすべてに型シグネチャが定義されなければならない。`AddressRecord` については `sig/manual/address_record.rbs` に全フィールド（`postal_code`・`pref_code`・`pref`・`city`・`town`・`kana_pref`・`kana_city`・`kana_town`・`has_alias`・`is_partial`・`is_large_office`）の型を手書きで定義する。
 - **FR-008**: 公開メソッド（`JpAddressComplement.search_by_postal_code`・`search_by_postal_code_prefix`・`valid_combination?`・`configure`・`configuration`）の引数型と返り値型が `.rbs` ファイルに正確に記述されなければならない。
-- **FR-009**: `Repositories::PostalCodeRepository` はインターフェース（抽象型）として定義し、`find_by_postal_code(postal_code: String): Array[AddressRecord]` および `find_by_postal_code_prefix(prefix: String): Array[AddressRecord]` のシグネチャを持たなければならない。
+- **FR-009**: `Repositories::PostalCodeRepository` はインターフェース（抽象型）として定義し、`find_by_code(code: String): Array[AddressRecord]` および `find_by_prefix(prefix: String): Array[AddressRecord]` のシグネチャを持たなければならない（現行実装のメソッド名に合わせる）。
 - **FR-010**: 既存の RuboCop ルールに準拠した状態（`bundle exec rubocop` エラーゼロ）を維持しなければならない。`rbs-inline` アノテーションコメントが既存ルールと競合する場合は、`.rubocop.yml` を最小限の変更で調整する。
 - **FR-011**: 既存のすべての RSpec テスト（`bundle exec rspec`）が引き続き全件パスし、SimpleCov カバレッジが 90% 以上を維持しなければならない。型アノテーションの追加はテストの振る舞いを変更してはならない。
 
@@ -102,13 +102,13 @@ Gem のコントリビューターがコードを変更してプルリクエス�
 
 - **CC-001**: `bundle exec rspec` が全テスト PASS し、SimpleCov カバレッジが **90% 以上**である。
 - **CC-002**: `bundle exec rubocop` が PASS（警告・エラーゼロ、`rubocop:disable` コメントなし）。
-- **CC-003**: すべての実装コードは先にテストを書き、Red-Green-Refactor サイクルを経ている（TDD）。ただし本機能はアノテーションの追加が主体であり、型チェックの設定・Rake タスクの実装については TDD サイクルを適用する。
+- **CC-003**: すべての実装コードは先にテストを書き、Red-Green-Refactor サイクルを経ている（TDD）。ただし本機能はアノテーションの追加が主体であり、型チェックの設定・Rake タスクの実装については TDD サイクルを適用する。Rake タスク（rbs:generate・steep）の動作検証は、`bundle exec rake rbs:generate` および `bundle exec rake steep` の手動実行で代替可能とする。
 - **CC-004**: gem は `JpAddressComplement` 名前空間に閉じており、コア検索ロジックは Repository インターフェースを介してデータアクセスし、ActiveRecord への直接依存を持たない。型導入によりこの設計が損なわれてはならない。
 
 ## Assumptions
 
 - 対象 Ruby バージョンは `>= 3.2.0`（gemspec で既に指定済み）。`Data.define` を使用している `AddressRecord` については、`rbs-inline` による自動生成が完全機能しない場合に備えて `sig/manual/address_record.rbs` に全フィールドの型を手書きで定義する。
-- `rbs-inline` の記法は gem リリース時点の安定バージョン（0.x 系）を使用する。バージョンは gemspec の development_dependency で `'~> 1.0'` のように束縛する（実際の最新安定版に合わせて調整）。
+- `rbs-inline` の記法は gem リリース時点の安定バージョン（1.x 系、`~> 1.0`）を使用する。バージョンは gemspec の development_dependency で束縛する（実際の最新安定版に合わせて調整）。
 - `steep` gem についても同様に development_dependency として追加し、特定のマイナーバージョン範囲に固定する。
 - Rails 内部・ActiveRecord の型定義は `rbs-rails` および `gem_rbs_collection` を開発依存として追加することで取得する。これらで解決できない型定義が残る場合のみ Steep の対象外設定（`library` 除外や `ignore` ディレクティブ）を最小限に適用する。
 - `rbs-inline` で自動生成したシグネチャは `sig/` 直下に出力する。手動で追加・修正が必要な型定義（`Data.define` のフォールバック型定義等）は `sig/manual/` サブディレクトリに分離して管理する。`sig/manual/` 配下のファイルは `rbs-inline` コマンドで上書きされない。
