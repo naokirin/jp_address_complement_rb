@@ -155,6 +155,8 @@ codes = JpAddressComplement.search_postal_codes_by_address(
 # config/initializers/jp_address_complement.rb
 JpAddressComplement.configure do |config|
   config.repository = MyApp::CustomPostalCodeRepository.new
+  # PostalCode モデルの継承元（未設定時は ActiveRecord::Base）
+  config.postal_code_model_base = ApplicationRecord
 end
 ```
 

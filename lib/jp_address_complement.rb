@@ -31,6 +31,17 @@ module JpAddressComplement
       @configuration ||= Configuration.new
     end
 
+    # PostalCode モデルの継承元。未設定時は ActiveRecord::Base。configuration.postal_code_model_base に委譲する。
+    # @rbs () -> Class
+    def base_record_class
+      configuration.postal_code_model_base || ActiveRecord::Base
+    end
+
+    # @rbs (Class) -> void
+    def base_record_class=(klass)
+      configuration.postal_code_model_base = klass
+    end
+
     # 設定をリセットする（主にテスト用）
     # @rbs () -> void
     def reset_configuration!

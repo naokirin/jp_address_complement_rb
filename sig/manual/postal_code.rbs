@@ -1,5 +1,5 @@
-# sig/manual/postal_code.rbs — PostalCode (ActiveRecord::Base) の手動型定義
-# rbs-inline の対象外。ActiveRecord のクラスメソッドは型のためここで宣言する。
+# sig/manual/postal_code.rbs — PostalCode の手動型定義
+# 継承元は JpAddressComplement.base_record_class（= configuration.postal_code_model_base、未設定時は ActiveRecord::Base）。型上は ActiveRecord::Base の子として扱う。
 
 module JpAddressComplement
   class PostalCode < ActiveRecord::Base

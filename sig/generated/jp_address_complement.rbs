@@ -17,6 +17,13 @@ module JpAddressComplement
   # @return [Configuration]
   def self.configuration: () -> Configuration
 
+  # PostalCode モデルの継承元。未設定時は ActiveRecord::Base。configuration.postal_code_model_base に委譲する。
+  # @rbs () -> Class
+  def self.base_record_class: () -> Class
+
+  # @rbs (Class) -> void
+  def self.base_record_class=: (Class) -> void
+
   # 設定をリセットする（主にテスト用）
   # @rbs () -> void
   def self.reset_configuration!: () -> void
