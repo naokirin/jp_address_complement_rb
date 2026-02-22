@@ -1,0 +1,17 @@
+# rubyzip の Steep 用スタブ（Zip::File 等）
+module Zip
+  class Error < StandardError
+  end
+
+  class File
+    def self.open: (String path) { (Zip::File) -> untyped } -> untyped
+
+    def each: () { (Zip::Entry) -> void } -> void
+  end
+
+  class Entry
+    attr_reader name: String
+
+    def extract: (String dest) { (bool) -> void } -> void
+  end
+end

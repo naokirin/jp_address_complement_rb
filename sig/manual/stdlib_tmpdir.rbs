@@ -1,0 +1,4 @@
+# tmpdir が Dir に追加するメソッド（Steep 用スタブ）
+class Dir
+  def self.mktmpdir: (?String prefix_suffix, ?String tmpdir) -> String
+end

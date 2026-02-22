@@ -5,6 +5,7 @@ PATH
       activerecord (>= 7.1)
       csv (>= 3.0)
       railties (>= 7.1)
+      rubyzip (>= 2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -209,6 +210,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     ruby-progressbar (1.13.0)
+    rubyzip (3.2.2)
     securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)

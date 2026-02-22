@@ -1,0 +1,33 @@
+# net/http の Steep 用スタブ（KenAllDownloader で使用）
+module Net
+  class HTTPError < StandardError
+  end
+
+  class OpenTimeout < Timeout::Error
+  end
+
+  class ReadTimeout < Timeout::Error
+  end
+
+  class HTTP
+    def self.start: (String host, Integer port, ?use_ssl: bool, ?read_timeout: Integer, ?open_timeout: Integer) { (Net::HTTP) -> untyped } -> untyped
+
+    def request: (Net::HTTPRequest request) { (Net::HTTPResponse) -> void } -> Net::HTTPResponse
+  end
+
+  class HTTP::Get < Net::HTTPRequest
+    def initialize: (URI::Generic uri) -> void
+  end
+
+  class HTTPSuccess < Net::HTTPResponse
+  end
+
+  class HTTPResponse
+    attr_reader code: String
+    attr_reader message: String
+    attr_reader body_io: IO
+  end
+
+  class HTTPRequest
+  end
+end

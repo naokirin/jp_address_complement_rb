@@ -1,0 +1,9 @@
+# open-uri が URI に追加するメソッド（Steep 用スタブ）
+module URI
+  def self.open: (String uri, ?read_timeout: Integer, ?open_timeout: Integer) { (untyped) -> untyped } -> untyped
+end
+
+module OpenURI
+  class HTTPError < StandardError
+  end
+end

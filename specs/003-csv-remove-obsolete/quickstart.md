@@ -9,9 +9,20 @@
 
 KEN_ALL.CSV の新版でフルインポートを実行すると、**今回のCSVに含まれない住所レコードは自動で削除**されます。
 
+**手元に CSV がある場合（従来どおり）:**
+
 ```bash
 bundle exec rake jp_address_complement:import CSV=/path/to/KEN_ALL.CSV
 ```
+
+**公式URLから zip を取得してそのままインポートする場合:**
+
+```bash
+bundle exec rake jp_address_complement:import DOWNLOAD=1
+```
+
+- `DOWNLOAD=1` を指定すると、[郵便番号データ（大字・小字）](https://www.post.japanpost.jp/zipcode/dl/oogaki/zip/ken_all.zip) をダウンロード・展開してからインポートします。
+- 別の URL を使う場合は `KEN_ALL_ZIP_URL=<URL>` も指定できます。
 
 - 以前のインポートで入っていたが、新しいCSVには存在しない行は、この1回のインポート完了後にテーブルから削除されます。
 - 同じCSVを何度実行しても結果は同じです（冪等）。
