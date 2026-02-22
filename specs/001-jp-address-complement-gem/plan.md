@@ -77,7 +77,7 @@ lib/
 │   ├── searcher.rb                       # コア検索ロジック（Repository 経由）
 │   ├── repositories/
 │   │   ├── postal_code_repository.rb     # 抽象基底クラス（インターフェース）
-│   │   └── active_record_repository.rb   # ActiveRecord 実装
+│   │   └── active_record_postal_code_repository.rb   # ActiveRecord 実装
 │   ├── models/
 │   │   └── postal_code.rb               # ActiveRecord モデル
 │   ├── validators/
@@ -108,7 +108,7 @@ spec/
 │   └── install_generator_spec.rb
 └── support/
     ├── fake_repository.rb                # テスト用 FakeRepository
-    └── database_cleaner.rb
+    └── database_helper.rb
 ```
 
 **Structure Decision**: Ruby gem の標準構成（`lib/`, `spec/`, `lib/tasks/`）を採用。Generator テンプレートは Rails のコンベンションに従い `lib/generators/` 配下に配置。
