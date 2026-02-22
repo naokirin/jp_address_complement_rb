@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rbs_inline: disabled — AddressRecord は Data.define のため sig/manual/address_record.rbs で手動定義
 
 module JpAddressComplement
   # 郵便番号に対応する住所データの値オブジェクト

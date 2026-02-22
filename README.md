@@ -28,6 +28,19 @@ TODO: Write usage instructions here
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
+### Type checking (RBS / Steep)
+
+This gem uses [RBS](https://github.com/ruby/rbs) and [Steep](https://github.com/soutaro/steep) for static type checking. Contributors can run type checks locally:
+
+```bash
+bundle install
+bundle exec rbs collection install   # optional: install third-party RBS (Rails, etc.)
+bundle exec rake rbs:generate       # generate sig/ from rbs-inline annotations
+bundle exec rake steep              # type check (must exit 0 to pass CI)
+```
+
+See [specs/002-rbs-type-annotations/quickstart.md](specs/002-rbs-type-annotations/quickstart.md) for the full workflow and annotation syntax.
+
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing

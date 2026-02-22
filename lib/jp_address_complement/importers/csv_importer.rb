@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 require 'csv'
 require_relative '../address_record'
@@ -9,32 +10,34 @@ module JpAddressComplement
     # KEN_ALL.CSV を読み込み、jp_address_complement_postal_codes テーブルに upsert する
     # Shift_JIS 形式の CSV を自動で UTF-8 に変換して処理する
     class CsvImporter
-      BATCH_SIZE = 1000
+      BATCH_SIZE = 1000 #: Integer
 
       # 列インデックス（KEN_ALL.CSV 形式）
-      COL_PREF_CODE = 0
-      COL_POSTAL_CODE = 2
-      COL_KANA_PREF = 3
-      COL_KANA_CITY = 4
-      COL_KANA_TOWN = 5
-      COL_PREF = 6
-      COL_CITY = 7
-      COL_TOWN = 8
-      COL_IS_PARTIAL = 9
-      COL_HAS_ALIAS = 12
-      COL_IS_LARGE_OFFICE = 13
+      COL_PREF_CODE = 0 #: Integer
+      COL_POSTAL_CODE = 2 #: Integer
+      COL_KANA_PREF = 3 #: Integer
+      COL_KANA_CITY = 4 #: Integer
+      COL_KANA_TOWN = 5 #: Integer
+      COL_PREF = 6 #: Integer
+      COL_CITY = 7 #: Integer
+      COL_TOWN = 8 #: Integer
+      COL_IS_PARTIAL = 9 #: Integer
+      COL_HAS_ALIAS = 12 #: Integer
+      COL_IS_LARGE_OFFICE = 13 #: Integer
 
+      # @rbs (String csv_path) -> void
       def initialize(csv_path)
         @csv_path = csv_path
       end
 
       # CSV を読み込んでバッチ upsert する
+      # @rbs () -> Integer
       # @return [Integer] インポートされた行数
       def import
         raise ImportError, "CSV ファイルが見つかりません: #{@csv_path}" unless File.exist?(@csv_path)
 
         total = 0
-        batch = []
+        batch = [] #: Array[Hash[Symbol, untyped]]
 
         CSV.foreach(@csv_path, encoding: 'Windows-31J:UTF-8') do |row|
           record = parse_row(row)
@@ -58,6 +61,7 @@ module JpAddressComplement
 
       private
 
+      # @rbs (Array[String?] row) -> (Hash[Symbol, untyped] | nil)
       def parse_row(row)
         postal_code = row[COL_POSTAL_CODE]&.strip
         pref_code = row[COL_PREF_CODE]&.strip&.slice(0, 2)
@@ -82,6 +86,7 @@ module JpAddressComplement
         }
       end
 
+      # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def upsert_batch(batch)
         PostalCode.upsert_all(
           batch,

@@ -1,0 +1,24 @@
+# Generated from lib/jp_address_complement/validators/address_validator.rb with RBS::Inline
+
+module JpAddressComplement
+  # ActiveModel::Validator を継承した郵便番号・住所整合性バリデーター
+  #
+  # @example
+  #   class User
+  #     include ActiveModel::Validations
+  #     validates_with JpAddressComplement::AddressValidator,
+  #                    postal_code_field: :postal_code,
+  #                    address_field: :full_address
+  #   end
+  # @rbs inherits ActiveModel::Validator
+  class AddressValidator < ActiveModel::Validator
+    # @rbs (untyped record) -> void
+    def validate: (untyped record) -> void
+
+    private
+
+    def postal_code_field: () -> untyped
+
+    def address_field: () -> untyped
+  end
+end

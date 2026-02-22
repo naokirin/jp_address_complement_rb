@@ -1,0 +1,50 @@
+# Generated from lib/jp_address_complement/importers/csv_importer.rb with RBS::Inline
+
+module JpAddressComplement
+  module Importers
+    # KEN_ALL.CSV を読み込み、jp_address_complement_postal_codes テーブルに upsert する
+    # Shift_JIS 形式の CSV を自動で UTF-8 に変換して処理する
+    class CsvImporter
+      BATCH_SIZE: Integer
+
+      # 列インデックス（KEN_ALL.CSV 形式）
+      COL_PREF_CODE: Integer
+
+      COL_POSTAL_CODE: Integer
+
+      COL_KANA_PREF: Integer
+
+      COL_KANA_CITY: Integer
+
+      COL_KANA_TOWN: Integer
+
+      COL_PREF: Integer
+
+      COL_CITY: Integer
+
+      COL_TOWN: Integer
+
+      COL_IS_PARTIAL: Integer
+
+      COL_HAS_ALIAS: Integer
+
+      COL_IS_LARGE_OFFICE: Integer
+
+      # @rbs (String csv_path) -> void
+      def initialize: (String csv_path) -> void
+
+      # CSV を読み込んでバッチ upsert する
+      # @rbs () -> Integer
+      # @return [Integer] インポートされた行数
+      def import: () -> Integer
+
+      private
+
+      # @rbs (Array[String?] row) -> (Hash[Symbol, untyped] | nil)
+      def parse_row: (Array[String?] row) -> (Hash[Symbol, untyped] | nil)
+
+      # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
+      def upsert_batch: (Array[Hash[Symbol, untyped]] batch) -> void
+    end
+  end
+end

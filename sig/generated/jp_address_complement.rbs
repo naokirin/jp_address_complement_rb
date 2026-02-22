@@ -1,0 +1,50 @@
+# Generated from lib/jp_address_complement.rb with RBS::Inline
+
+module JpAddressComplement
+  class Error < StandardError
+  end
+
+  class ImportError < Error
+  end
+
+  # Gem の設定を行う
+  # @rbs () { (Configuration) -> void } -> void
+  # @yield [Configuration]
+  def self.configure: () { (Configuration) -> void } -> void
+
+  # 現在の設定を返す
+  # @rbs () -> Configuration
+  # @return [Configuration]
+  def self.configuration: () -> Configuration
+
+  # 設定をリセットする（主にテスト用）
+  # @rbs () -> void
+  def self.reset_configuration!: () -> void
+
+  # 設定されたリポジトリを返す（デフォルトは ActiveRecord 実装）
+  # @rbs () -> Repositories::PostalCodeRepository
+  # @return [Repositories::PostalCodeRepository]
+  def self.repository: () -> Repositories::PostalCodeRepository
+
+  # 7桁郵便番号から住所レコードを検索する
+  # @rbs (String) -> Array[AddressRecord]
+  # @param code [String] 郵便番号（ハイフン・全角・〒 記号を自動正規化）
+  # @return [Array<AddressRecord>]
+  def self.search_by_postal_code: (String) -> Array[AddressRecord]
+
+  # 郵便番号の先頭4桁以上から住所候補を検索する
+  # @rbs (String) -> Array[AddressRecord]
+  # @param prefix [String] 郵便番号の先頭部分（4桁以上）
+  # @return [Array<AddressRecord>]
+  def self.search_by_postal_code_prefix: (String) -> Array[AddressRecord]
+
+  # 郵便番号と住所文字列の整合性を検証する
+  # @rbs (String, String) -> bool
+  # @param postal_code [String] 郵便番号（自動正規化）
+  # @param address [String] 住所文字列
+  # @return [Boolean]
+  def self.valid_combination?: (String, String) -> bool
+
+  # @rbs () -> Repositories::ActiveRecordPostalCodeRepository
+  private def self.default_repository: () -> Repositories::ActiveRecordPostalCodeRepository
+end

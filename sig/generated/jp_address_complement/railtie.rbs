@@ -1,0 +1,8 @@
+# Generated from lib/jp_address_complement/railtie.rb with RBS::Inline
+
+module JpAddressComplement
+  # Rails との統合を担う Railtie
+  # @rbs inherits Rails::Railtie
+  class Railtie < Rails::Railtie
+  end
+end

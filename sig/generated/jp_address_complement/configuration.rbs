@@ -1,15 +1,12 @@
-# frozen_string_literal: true
-# rbs_inline: enabled
+# Generated from lib/jp_address_complement/configuration.rb with RBS::Inline
 
 module JpAddressComplement
   # Gem の設定を保持するクラス
   # configure ブロックを通じて repository アダプターを注入する
   class Configuration
-    attr_accessor :repository #: Repositories::PostalCodeRepository?
+    attr_accessor repository: Repositories::PostalCodeRepository?
 
     # @rbs () -> void
-    def initialize
-      @repository = nil
-    end
+    def initialize: () -> void
   end
 end

@@ -99,6 +99,24 @@ Rails/DynamicFindBy:
     - find_by_code
     - find_by_prefix
 
+# rbs-inline の #: Type 注釈は # の直後に : が来るため LeadingCommentSpace と競合（FR-010, T008）
+Layout/LeadingCommentSpace:
+  Exclude:
+    - "lib/jp_address_complement/configuration.rb"
+    - "lib/jp_address_complement/importers/csv_importer.rb"
+    - "lib/jp_address_complement/normalizer.rb"
+    - "lib/jp_address_complement/version.rb"
+
+# マジックコメント直後の空行: rbs_inline: disabled は 1 行で理由まで書くため空行を入れない（T008）
+Layout/EmptyLineAfterMagicComment:
+  Exclude:
+    - "lib/jp_address_complement/address_record.rb"
+
+# rbs:generate / steep は Rails 不要のため :environment 依存にしない（Rails/RakeEnvironment 除外理由）
+Rails/RakeEnvironment:
+  Exclude:
+    - "lib/tasks/jp_address_complement.rake"
+
 # Gem の PostalCode モデルは ApplicationRecord を使わず ActiveRecord::Base を直接継承する
 # （Gem が Rails に依存しない設計のため）
 Rails/ApplicationRecord:

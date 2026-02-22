@@ -1,17 +1,19 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 require 'rails'
 
 module JpAddressComplement
   # Rails との統合を担う Railtie
+  # @rbs inherits Rails::Railtie
   class Railtie < Rails::Railtie
     railtie_name :jp_address_complement
 
     rake_tasks do
-      load File.expand_path('../../tasks/jp_address_complement.rake', __dir__)
+      load File.expand_path('../../tasks/jp_address_complement.rake', __dir__.to_s)
     end
 
-    initializer 'jp_address_complement.setup_repository' do
+    initializer 'jp_address_complement.setup_repository' do # steep:ignore
       require_relative 'repositories/active_record_postal_code_repository'
       require_relative 'models/postal_code'
       JpAddressComplement.configuration.repository ||=

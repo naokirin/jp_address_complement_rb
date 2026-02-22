@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-# rbs_inline: enabled
+# Generated from lib/jp_address_complement/repositories/postal_code_repository.rb with RBS::Inline
 
 module JpAddressComplement
   module Repositories
@@ -10,17 +9,13 @@ module JpAddressComplement
       # @rbs (String code) -> Array[AddressRecord]
       # @param code [String] 正規化済み7桁郵便番号
       # @return [Array<AddressRecord>]
-      def find_by_code(code)
-        raise NotImplementedError, "#{self.class}#find_by_code を実装してください"
-      end
+      def find_by_code: (String code) -> Array[AddressRecord]
 
       # 郵便番号プレフィックスで前方一致検索する
       # @rbs (String prefix) -> Array[AddressRecord]
       # @param prefix [String] 4桁以上の郵便番号プレフィックス
       # @return [Array<AddressRecord>]
-      def find_by_prefix(prefix)
-        raise NotImplementedError, "#{self.class}#find_by_prefix を実装してください"
-      end
+      def find_by_prefix: (String prefix) -> Array[AddressRecord]
     end
   end
 end

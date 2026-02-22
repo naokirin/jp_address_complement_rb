@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 require 'active_record'
 
 module JpAddressComplement
   # 住所テーブル (jp_address_complement_postal_codes) に対応する ActiveRecord モデル
+  # @rbs inherits ActiveRecord::Base
   class PostalCode < ActiveRecord::Base
     self.table_name = 'jp_address_complement_postal_codes'
 

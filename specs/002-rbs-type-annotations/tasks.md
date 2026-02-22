@@ -23,10 +23,10 @@
 
 **Purpose**: RBS/Steep 用の開発依存と設定の追加
 
-- [ ] T001 Add development dependencies (rbs-inline, steep, rbs-rails, gem_rbs_collection) to jp_address_complement.gemspec per research.md
-- [ ] T002 Create Steepfile at project root with target :lib, signature "sig", check "lib" per research.md and plan.md
-- [ ] T003 Create sig/ and sig/manual/ directories (sig/manual/ for hand-written RBS not overwritten by rbs-inline)
-- [ ] T004 [P] Add rbs_collection.yaml or configure gem_rbs_collection at repo root when required（必要条件は research.md セクション 4「rbs_collection の設定」を参照）
+- [x] T001 Add development dependencies (rbs-inline, steep, rbs-rails, gem_rbs_collection) to jp_address_complement.gemspec per research.md
+- [x] T002 Create Steepfile at project root with target :lib, signature "sig", check "lib" per research.md and plan.md
+- [x] T003 Create sig/ and sig/manual/ directories (sig/manual/ for hand-written RBS not overwritten by rbs-inline)
+- [x] T004 [P] Add rbs_collection.yaml or configure gem_rbs_collection at repo root when required（必要条件は research.md セクション 4「rbs_collection の設定」を参照）
 
 ---
 
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: この Phase が完了するまでユーザーストーリーの実装に着手しない
 
-- [ ] T005 Create sig/manual/address_record.rbs with all fields (postal_code, pref_code, pref, city, town, kana_pref, kana_city, kana_town, has_alias, is_partial, is_large_office) per contracts/rbs-public-api.md and data-model.md
-- [ ] T006 Add Rake task rbs:generate (bundle exec rbs-inline --output sig/ lib/) in lib/tasks/jp_address_complement.rake
-- [ ] T007 Add Rake task steep (bundle exec steep check) in lib/tasks/jp_address_complement.rake
-- [ ] T008 [P] Adjust .rubocop.yml if rbs-inline comments violate existing rules; document reason in comment (FR-010, no rubocop:disable)
+- [x] T005 Create sig/manual/address_record.rbs with all fields (postal_code, pref_code, pref, city, town, kana_pref, kana_city, kana_town, has_alias, is_partial, is_large_office) per contracts/rbs-public-api.md and data-model.md
+- [x] T006 Add Rake task rbs:generate (bundle exec rbs-inline --output sig/ lib/) in lib/tasks/jp_address_complement.rake
+- [x] T007 Add Rake task steep (bundle exec steep check) in lib/tasks/jp_address_complement.rake
+- [x] T008 [P] Adjust .rubocop.yml if rbs-inline comments violate existing rules; document reason in comment (FR-010, no rubocop:disable)
 
 **Checkpoint**: Foundation ready — T006・T007 完了後、`bundle exec rake rbs:generate` と `bundle exec rake steep` を一度手動実行し動作を確認する（CC-003: Rake タスクの検証は手動で代替）。以降、US1/US2/US3 の実装を開始可能。
 
@@ -53,14 +53,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Add rbs-inline annotations to lib/jp_address_complement.rb (configure, configuration, repository, search_by_postal_code, search_by_postal_code_prefix, valid_combination?, default_repository) per contracts/rbs-public-api.md
-- [ ] T010 [US1] Add rbs-inline annotations to lib/jp_address_complement/configuration.rb
-- [ ] T011 [US1] Add rbs-inline annotations to lib/jp_address_complement/normalizer.rb
-- [ ] T012 [US1] Add rbs-inline annotations to lib/jp_address_complement/searcher.rb
-- [ ] T013 [US1] Add rbs-inline annotations to lib/jp_address_complement/repositories/postal_code_repository.rb (find_by_code, find_by_prefix)
-- [ ] T014 [US1] Add rbs-inline annotations to lib/jp_address_complement/repositories/active_record_postal_code_repository.rb
-- [ ] T015 [US1] Run bundle exec rake rbs:generate and fix Steep errors (add sig/manual reference if needed, use # steep:ignore with reason only for false positives) until bundle exec rake steep exits 0
-- [ ] T016 [US1] Verify bundle exec rake steep exits 0, bundle exec rspec passes, bundle exec rubocop passes, and SimpleCov remains ≥90%
+- [x] T009 [US1] Add rbs-inline annotations to lib/jp_address_complement.rb (configure, configuration, repository, search_by_postal_code, search_by_postal_code_prefix, valid_combination?, default_repository) per contracts/rbs-public-api.md
+- [x] T010 [US1] Add rbs-inline annotations to lib/jp_address_complement/configuration.rb
+- [x] T011 [US1] Add rbs-inline annotations to lib/jp_address_complement/normalizer.rb
+- [x] T012 [US1] Add rbs-inline annotations to lib/jp_address_complement/searcher.rb
+- [x] T013 [US1] Add rbs-inline annotations to lib/jp_address_complement/repositories/postal_code_repository.rb (find_by_code, find_by_prefix)
+- [x] T014 [US1] Add rbs-inline annotations to lib/jp_address_complement/repositories/active_record_postal_code_repository.rb
+- [x] T015 [US1] Run bundle exec rake rbs:generate and fix Steep errors (add sig/manual reference if needed, use # steep:ignore with reason only for false positives) until bundle exec rake steep exits 0
+- [x] T016 [US1] Verify bundle exec rake steep exits 0, bundle exec rspec passes, bundle exec rubocop passes, and SimpleCov remains ≥90%
 
 **Checkpoint**: User Story 1 完了 — 利用者向けに型情報が参照可能で、steep check が通る状態
 
@@ -74,14 +74,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/address_record.rb (Data.define は manual を併用する想定で必要範囲のみでも可)
-- [ ] T018 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/version.rb and lib/jp_address_complement/railtie.rb
-- [ ] T019 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/models/postal_code.rb
-- [ ] T020 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/validators/address_validator.rb
-- [ ] T021 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/importers/csv_importer.rb
-- [ ] T022 [P] [US2] Add rbs-inline annotations to lib/generators/jp_address_complement/install_generator.rb
-- [ ] T023 [US2] Run bundle exec rake rbs:generate and ensure bundle exec rake steep exits 0; fix any new type errors
-- [ ] T024 [US2] Resolve any Steep warnings for unannotated methods so that FR-004 (型エラーゼロ) and SC-002 are met
+- [x] T017 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/address_record.rb (Data.define は manual を併用する想定で必要範囲のみでも可)
+- [x] T018 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/version.rb and lib/jp_address_complement/railtie.rb
+- [x] T019 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/models/postal_code.rb
+- [x] T020 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/validators/address_validator.rb
+- [x] T021 [P] [US2] Add rbs-inline annotations to lib/jp_address_complement/importers/csv_importer.rb
+- [x] T022 [P] [US2] Add rbs-inline annotations to lib/generators/jp_address_complement/install_generator.rb
+- [x] T023 [US2] Run bundle exec rake rbs:generate and ensure bundle exec rake steep exits 0; fix any new type errors
+- [x] T024 [US2] Resolve any Steep warnings for unannotated methods so that FR-004 (型エラーゼロ) and SC-002 are met
 
 **Checkpoint**: User Story 2 完了 — 開発者が rbs-inline で型を一括維持できる状態
 
@@ -95,8 +95,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Add steep check to CI (e.g. .github/workflows/*.yml or project CI config) so that bundle exec rake steep is run and non-zero exit fails the job
-- [ ] T026 [US3] Document rake steep and rake rbs:generate in README or docs so contributors can run type check locally (align with specs/002-rbs-type-annotations/quickstart.md)
+- [x] T025 [US3] Add steep check to CI (e.g. .github/workflows/*.yml or project CI config) so that bundle exec rake steep is run and non-zero exit fails the job
+- [x] T026 [US3] Document rake steep and rake rbs:generate in README or docs so contributors can run type check locally (align with specs/002-rbs-type-annotations/quickstart.md)
 
 **Checkpoint**: User Story 3 完了 — CI で型安全性が継続的に保護される
 
@@ -106,8 +106,8 @@
 
 **Purpose**: 複数ストーリーにまたがる仕上げ
 
-- [ ] T027 [P] Validate developer workflow per specs/002-rbs-type-annotations/quickstart.md (rbs:generate → steep の流れが動作すること)
-- [ ] T028 Update CHANGELOG for RBS/type annotations support if this is a user-facing change
+- [x] T027 [P] Validate developer workflow per specs/002-rbs-type-annotations/quickstart.md (rbs:generate → steep の流れが動作すること)
+- [x] T028 Update CHANGELOG for RBS/type annotations support if this is a user-facing change
 
 ---
 

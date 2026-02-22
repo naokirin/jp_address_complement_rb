@@ -1,15 +1,17 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 module JpAddressComplement
   # 郵便番号の正規化処理を担当するクラス
   # 全角→半角変換・〒記号除去・ハイフン除去を行う
   class Normalizer
     # 半角数字以外の文字を除去するためのパターン
-    DIGIT_ONLY = /\A\d{7}\z/
-    PREFIX_MIN_LENGTH = 4
+    DIGIT_ONLY = /\A\d{7}\z/ #: Regexp
+    PREFIX_MIN_LENGTH = 4 #: Integer
 
     class << self
       # 郵便番号文字列を正規化して7桁の半角数字文字列を返す
+      # @rbs (String?) -> String?
       # @param code [String, nil] 郵便番号文字列（ハイフン・全角・〒記号を自動除去）
       # @return [String, nil] 正規化後の7桁郵便番号。不正な場合は nil
       def normalize_postal_code(code)
@@ -22,6 +24,7 @@ module JpAddressComplement
       end
 
       # 郵便番号プレフィックスを正規化する
+      # @rbs (String?) -> String?
       # @param prefix [String, nil] 郵便番号の先頭部分（4桁以上）
       # @return [String, nil] 正規化後の数字文字列。4桁未満または不正な場合は nil
       def normalize_prefix(prefix)
@@ -37,6 +40,7 @@ module JpAddressComplement
 
       private
 
+      # @rbs (String) -> String
       def normalize_string(str)
         str
           .tr('〒', '')

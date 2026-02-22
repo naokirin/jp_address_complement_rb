@@ -1,0 +1,32 @@
+# sig/manual/address_record.rbs — AddressRecord (Data.define) の手動型定義
+# contracts/rbs-public-api.md, data-model.md に準拠。rbs-inline では上書きしない。
+
+module JpAddressComplement
+  class AddressRecord
+    attr_reader postal_code: String
+    attr_reader pref_code: String
+    attr_reader pref: String
+    attr_reader city: String
+    attr_reader town: String?
+    attr_reader kana_pref: String?
+    attr_reader kana_city: String?
+    attr_reader kana_town: String?
+    attr_reader has_alias: bool
+    attr_reader is_partial: bool
+    attr_reader is_large_office: bool
+
+    def initialize: (
+      postal_code: String,
+      pref_code: String,
+      pref: String,
+      city: String,
+      ?town: String?,
+      ?kana_pref: String?,
+      ?kana_city: String?,
+      ?kana_town: String?,
+      ?has_alias: bool,
+      ?is_partial: bool,
+      ?is_large_office: bool
+    ) -> void
+  end
+end

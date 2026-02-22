@@ -1,0 +1,18 @@
+# Generated from lib/generators/jp_address_complement/install_generator.rb with RBS::Inline
+
+module JpAddressComplement
+  module Generators
+    # `rails g jp_address_complement:install` で呼び出されるジェネレーター
+    # 住所テーブル用マイグレーションファイルを利用者アプリの db/migrate/ に生成する
+    class InstallGenerator < Rails::Generators::Base
+      include Rails::Generators::Migration
+
+      # Rails::Generators::Base の RBS に next_migration_number 等が未定義のため steep:ignore
+      # @rbs (String dirname) -> String
+      def self.next_migration_number: (String dirname) -> String
+
+      # @rbs () -> void
+      def create_migration_file: () -> void
+    end
+  end
+end

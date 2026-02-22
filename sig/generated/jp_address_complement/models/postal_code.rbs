@@ -1,0 +1,8 @@
+# Generated from lib/jp_address_complement/models/postal_code.rb with RBS::Inline
+
+module JpAddressComplement
+  # 住所テーブル (jp_address_complement_postal_codes) に対応する ActiveRecord モデル
+  # @rbs inherits ActiveRecord::Base
+  class PostalCode < ActiveRecord::Base
+  end
+end

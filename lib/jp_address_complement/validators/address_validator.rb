@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 require 'active_model'
 
@@ -12,7 +13,9 @@ module JpAddressComplement
   #                    postal_code_field: :postal_code,
   #                    address_field: :full_address
   #   end
+  # @rbs inherits ActiveModel::Validator
   class AddressValidator < ActiveModel::Validator
+    # @rbs (untyped record) -> void
     def validate(record)
       postal_code = record.public_send(postal_code_field)
       address = record.public_send(address_field)

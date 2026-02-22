@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rbs_inline: enabled
 
 require_relative 'normalizer'
 require_relative 'repositories/postal_code_repository'
@@ -7,11 +8,13 @@ module JpAddressComplement
   # コア検索ロジック
   # Repository を注入して使用することで ActiveRecord への直接依存を排除する
   class Searcher
+    # @rbs (Repositories::PostalCodeRepository repository) -> void
     def initialize(repository)
       @repository = repository
     end
 
     # 7桁郵便番号から住所レコードを検索する
+    # @rbs (String? code) -> Array[AddressRecord]
     # @param code [String, nil] 郵便番号
     # @return [Array<AddressRecord>]
     def search_by_postal_code(code)
@@ -22,6 +25,7 @@ module JpAddressComplement
     end
 
     # 郵便番号プレフィックスから住所候補を検索する（4桁以上）
+    # @rbs (String? prefix) -> Array[AddressRecord]
     # @param prefix [String, nil] 郵便番号の先頭部分
     # @return [Array<AddressRecord>]
     def search_by_postal_code_prefix(prefix)
@@ -32,6 +36,7 @@ module JpAddressComplement
     end
 
     # 郵便番号と住所文字列の整合性を検証する
+    # @rbs (String? postal_code, String? address) -> bool
     # @param postal_code [String, nil] 郵便番号
     # @param address [String, nil] 住所文字列
     # @return [Boolean]

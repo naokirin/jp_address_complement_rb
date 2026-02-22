@@ -22,3 +22,6 @@ coverage/
 
 # macOS
 .DS_Store
+
+# RBS collection (rbs collection install の出力先)
+.gem_rbs_collection/
