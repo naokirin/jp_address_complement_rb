@@ -1,0 +1,22 @@
+<h1>郵便番号から住所を検索</h1>
+
+<%= form_with url: addresses_path, method: :get, local: true do |f| %>
+  <p>
+    <%= f.label :postal_code, '郵便番号（7桁・ハイフン可）' %>
+    <%= f.text_field :postal_code, value: @postal_code, placeholder: '1000001', maxlength: 8, size: 10 %>
+    <%= f.submit '検索' %>
+  </p>
+<% end %>
+
+<% if @postal_code.present? %>
+  <h2>検索結果（<%= @postal_code %>）</h2>
+  <% if @addresses.any? %>
+    <ul>
+      <% @addresses.each do |addr| %>
+        <li><%= addr.pref %><%= addr.city %><%= addr.town %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>該当する住所はありません。</p>
+  <% end %>
+<% end %>

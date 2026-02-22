@@ -10,7 +10,7 @@ module JpAddressComplement
     railtie_name :jp_address_complement
 
     rake_tasks do
-      load File.expand_path('../../tasks/jp_address_complement.rake', __dir__.to_s)
+      load File.expand_path('../tasks/jp_address_complement.rake', __dir__.to_s)
     end
 
     initializer 'jp_address_complement.setup_repository' do # steep:ignore
@@ -21,7 +21,7 @@ module JpAddressComplement
     end
 
     generators do
-      require_relative '../../generators/jp_address_complement/install_generator'
+      require_relative '../generators/jp_address_complement/install_generator'
     end
   end
 end
