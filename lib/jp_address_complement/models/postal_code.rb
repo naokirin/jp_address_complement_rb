@@ -1,11 +1,10 @@
 # frozen_string_literal: true
-# rbs_inline: enabled
 
+# rbs_inline: disabled — ActiveRecord::Base 継承のため型は sig/manual/ で手動管理
 require 'active_record'
 
 module JpAddressComplement
   # 住所テーブル (jp_address_complement_postal_codes) に対応する ActiveRecord モデル
-  # @rbs inherits ActiveRecord::Base
   class PostalCode < ActiveRecord::Base
     self.table_name = 'jp_address_complement_postal_codes'
 
@@ -13,10 +12,5 @@ module JpAddressComplement
     validates :pref_code, presence: true
     validates :pref, presence: true
     validates :city, presence: true
-
-    # Steep 用: ActiveRecord のクラスメソッド（rbs-inline で generated に含める）
-    # @rbs (*untyped) -> untyped
-    def self.where(*_args) = super
-    # @rbs (Symbol column) -> untyped
   end
 end

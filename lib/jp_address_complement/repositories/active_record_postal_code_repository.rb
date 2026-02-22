@@ -23,21 +23,37 @@ module JpAddressComplement
         postal_code_model.where('postal_code LIKE ?', "#{prefix}%").map { |ar| to_record(ar) } # steep:ignore
       end
 
-      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[AddressRecord]
       def find_postal_codes_by_address(pref:, city:, town: nil)
-        return [] if pref.nil? || pref.to_s.strip.empty?
-        return [] if city.nil? || city.to_s.strip.empty?
+        relation = address_relation(pref: pref, city: city, town: town)
+        return [] unless relation
 
-        relation = postal_code_model.where(pref: pref, city: city)
-        relation = relation.where(town: town) if town.present?
-        relation.distinct.pluck(:postal_code)
+        relation.map { |ar| to_record(ar) } # steep:ignore
       end
 
       private
 
+      # @rbs (pref: String?, city: String?, ?town: String?) -> untyped
+      def address_relation(pref:, city:, town: nil)
+        return nil if pref.nil? || pref.to_s.strip.empty?
+        return nil if city.nil? || city.to_s.strip.empty?
+
+        relation = postal_code_model.where(pref: pref, city: city)
+        return relation if town.blank?
+
+        pattern = "#{escape_like(town.to_s.strip)}%"
+        relation.where('town LIKE ?', pattern)
+      end
+
       # @rbs () -> singleton(PostalCode)
       def postal_code_model
         JpAddressComplement::PostalCode
+      end
+
+      # LIKE 句用に % _ \ をエスケープする
+      # @rbs (String) -> String
+      def escape_like(str)
+        str.gsub(/[%_\\]/) { "\\#{Regexp.last_match(0)}" }
       end
 
       # ActiveRecord の動的属性のため Steep の型が不足する。理由明記で抑制（research §7）

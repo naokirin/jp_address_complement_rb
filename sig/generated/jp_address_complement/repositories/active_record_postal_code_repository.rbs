@@ -15,13 +15,20 @@ module JpAddressComplement
       # @return [Array<AddressRecord>]
       def find_by_prefix: (String prefix) -> Array[AddressRecord]
 
-      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
-      def find_postal_codes_by_address: (pref: String?, city: String?, ?town: String?) -> Array[String]
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[AddressRecord]
+      def find_postal_codes_by_address: (pref: String?, city: String?, ?town: String?) -> Array[AddressRecord]
 
       private
 
+      # @rbs (pref: String?, city: String?, ?town: String?) -> untyped
+      def address_relation: (pref: String?, city: String?, ?town: String?) -> untyped
+
       # @rbs () -> singleton(PostalCode)
       def postal_code_model: () -> singleton(PostalCode)
+
+      # LIKE 句用に % _ \ をエスケープする
+      # @rbs (String) -> String
+      def escape_like: (String) -> String
 
       # ActiveRecord の動的属性のため Steep の型が不足する。理由明記で抑制（research §7）
       # @rbs (untyped postal_code_ar) -> AddressRecord

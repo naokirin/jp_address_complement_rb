@@ -22,12 +22,12 @@ module JpAddressComplement
         raise NotImplementedError, "#{self.class}#find_by_prefix を実装してください"
       end
 
-      # 都道府県・市区町村・町域で完全一致検索し、郵便番号の配列を返す（逆引き）
-      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
+      # 都道府県・市区町村・町域で検索する（逆引き）。町域は前方一致。
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[AddressRecord]
       # @param pref [String] 都道府県名（正式名称）
       # @param city [String] 市区町村名
-      # @param town [String, nil] 町域名。省略時は都道府県＋市区町村のみで検索
-      # @return [Array<String>] 郵便番号（7桁文字列）の配列。重複除く。該当なし・入力不十分時は []
+      # @param town [String, nil] 町域名。省略時は都道府県＋市区町村のみ。指定時は前方一致で候補を返す
+      # @return [Array<AddressRecord>] 該当レコードの配列。該当なし・入力不十分時は []
       def find_postal_codes_by_address(pref:, city:, town: nil)
         raise NotImplementedError, "#{self.class}#find_postal_codes_by_address を実装してください"
       end

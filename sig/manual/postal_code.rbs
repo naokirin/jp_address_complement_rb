@@ -1,0 +1,9 @@
+# sig/manual/postal_code.rbs — PostalCode (ActiveRecord::Base) の手動型定義
+# rbs-inline の対象外。ActiveRecord のクラスメソッドは型のためここで宣言する。
+
+module JpAddressComplement
+  class PostalCode < ActiveRecord::Base
+    def self.where: (*untyped) -> untyped
+    def self.maximum: (Symbol column) -> Integer?
+  end
+end

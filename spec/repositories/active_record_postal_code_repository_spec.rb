@@ -78,20 +78,29 @@ RSpec.describe JpAddressComplement::Repositories::ActiveRecordPostalCodeReposito
 
   describe '#find_postal_codes_by_address', :us3 do
     context 'when pref + city + town を指定した場合' do
-      it '該当する郵便番号の配列を返す（重複除く）' do
+      it '該当する AddressRecord の配列を返す' do
         results = repo.find_postal_codes_by_address(pref: '東京都', city: '千代田区', town: '千代田')
         expect(results).to be_an(Array)
-        expect(results).to all(be_a(String))
-        expect(results).to include('1000001')
-        expect(results.uniq).to eq(results)
+        expect(results).to all(be_a(JpAddressComplement::AddressRecord))
+        expect(results.map(&:postal_code)).to include('1000001')
+        expect(results.find { |r| r.postal_code == '1000001' }.town).to eq('千代田')
+      end
+    end
+
+    context 'when 町域を前方一致で指定した場合' do
+      it '町域が前方一致する AddressRecord の配列を返す' do
+        results = repo.find_postal_codes_by_address(pref: '東京都', city: '千代田区', town: '千代')
+        expect(results).to all(be_a(JpAddressComplement::AddressRecord))
+        expect(results.map(&:postal_code)).to include('1000001')
+        expect(results.find { |r| r.postal_code == '1000001' }.town).to eq('千代田')
       end
     end
 
     context 'when pref + city のみ（town 省略）の場合' do
-      it 'その都道府県・市区町村に属する郵便番号を返す' do
+      it 'その都道府県・市区町村に属する AddressRecord の配列を返す' do
         results = repo.find_postal_codes_by_address(pref: '東京都', city: '千代田区', town: nil)
         expect(results).to be_an(Array)
-        expect(results).to include('1000001')
+        expect(results.map(&:postal_code)).to include('1000001')
       end
     end
 

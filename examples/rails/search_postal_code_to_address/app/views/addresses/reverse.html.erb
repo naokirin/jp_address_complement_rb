@@ -20,7 +20,10 @@
 <% if @pref.present? && @city.present? %>
   <h2>検索結果</h2>
   <% if @postal_codes.any? %>
-    <p>該当する郵便番号: <%= @postal_codes.join(', ') %></p>
+    <p>該当する郵便番号: </p>
+    <% @postal_codes.map(&:second).each do |record| %>
+      <p><%= "#{record.postal_code} #{record.pref}#{record.city}#{record.town}" %></p>
+    <% end %>
   <% else %>
     <p>該当する郵便番号はありません。</p>
   <% end %>

@@ -70,7 +70,9 @@ module JpAddressComplement
         if response.respond_to?(:body_io)
           IO.copy_stream(response.body_io, f)
         else
-          f.write(response.body)
+          # Net::HTTPResponse#body は stdlib RBS で型が不足することがある
+          body = response.body # steep:ignore
+          f.write(body)
         end
       end
     end
@@ -96,7 +98,8 @@ module JpAddressComplement
           name = entry.name.delete_prefix('/')
           # RubyZip の extract(entry_path, destination_directory: '.') では第1引数は destination_directory に対する相対パスとして扱われる。
           # 絶対パスを渡すと File.join(dest_dir, entry_path) で CWD が先頭に付き不正なパスになるため、エントリ名と tmpdir を分けて渡す。
-          entry.extract(name, destination_directory: tmpdir) { true } # 上書き許可
+          # RubyZip Entry#extract のキーワード引数シグネチャが RBS と差異あり（上書き許可）
+          entry.extract(name, destination_directory: tmpdir) { true } # steep:ignore
           dest = File.join(tmpdir, name)
           csv_path = dest if entry_csv?(name, dest)
         end
