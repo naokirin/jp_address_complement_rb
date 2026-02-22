@@ -1,0 +1,129 @@
+plugins:
+  - rubocop-rails
+
+require:
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+  SuggestExtensions: false
+  Exclude:
+    - "bin/**/*"
+    - "sig/**/*"
+    - "vendor/**/*"
+    - "specs/**/*"
+
+# Gemspec の development dependency は gemspec 内で管理
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# 日本語コメントを許容
+Style/AsciiComments:
+  Enabled: false
+
+# frozen_string_literal は全ファイルで必須
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+# プロジェクトの特性上、メソッドの行数制限を緩める
+Metrics/MethodLength:
+  Max: 20
+
+# CsvImporter のブロック長は許容
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "jp_address_complement.gemspec"
+
+# モジュール・クラス長の上限を緩める（Repository 実装用）
+Metrics/ClassLength:
+  Max: 150
+
+# RSpec の describe/context は DSL の性質上緩める
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 5
+
+# Generator・タスク・パフォーマンステストはクラス記述不要
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/generators/**/*"
+    - "spec/tasks/**/*"
+    - "spec/performance_spec.rb"
+
+# RSpec spec パスのディレクトリ構成を許容（spec/ 直下に rb ファイルを置きたい場合）
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+# context の日本語記述の等を許容
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - 正常な
+    - 不正な
+    - "nil"
+    - 先頭
+    - 7桁
+    - 4桁
+    - 8桁
+    - 同じ
+    - 異なる
+
+# AddressRecord は Data.define の返り値で定数名規則を強制できない
+Naming/ConstantName:
+  Exclude:
+    - "lib/jp_address_complement/address_record.rb"
+
+# Gem エントリーポイントはトップレベルドキュメントを必須としない
+Style/Documentation:
+  Exclude:
+    - "lib/jp_address_complement.rb"
+    - "spec/**/*"
+
+# find_by_code / find_by_prefix は ActiveRecord 動的ファインダーではなく独自のリポジトリメソッドのため除外
+# （rubocop-rails が誤検知するため）
+Rails/DynamicFindBy:
+  AllowedMethods:
+    - find_by_code
+    - find_by_prefix
+
+# Gem の PostalCode モデルは ApplicationRecord を使わず ActiveRecord::Base を直接継承する
+# （Gem が Rails に依存しない設計のため）
+Rails/ApplicationRecord:
+  Exclude:
+    - "lib/jp_address_complement/models/postal_code.rb"
+
+# 日本語文字列を含む行は文字数が増えやすいため上限を緩める
+Layout/LineLength:
+  Max: 130
+
+# CsvImporter の parse_row は列数が多い CSV のパースのためやむを得ず複雑になる
+Metrics/AbcSize:
+  Exclude:
+    - "lib/jp_address_complement/importers/csv_importer.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "lib/jp_address_complement/importers/csv_importer.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "lib/jp_address_complement/importers/csv_importer.rb"
+
+# upsert_all はインポートのパフォーマンス要件（60秒・120k件）のため意図的に使用
+# validates は CSV インポート前に parse_row でチェック済み
+Rails/SkipsModelValidations:
+  Exclude:
+    - "lib/jp_address_complement/importers/csv_importer.rb"
