@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2026-02-23
 
 ## Active Technologies
+- Ruby 3.0+（3.2 以上推奨） + Rails 7.x 以上（オプション）、RSpec、SimpleCov、RuboCop (004-prefecture-code-reverse-lookup)
+- 都道府県コード⇔名称はメモリ内の定数マッピング。逆引きは既存の `jp_address_complement_postal_codes` テーブルを利用。 (004-prefecture-code-reverse-lookup)
 
 - Ruby 3.x（3.2 以上推奨） + Rails 7.x、ActiveRecord、標準庫 CSV (003-csv-remove-obsolete)
 
@@ -22,6 +24,7 @@ tests/
 Ruby 3.x（3.2 以上推奨）: Follow standard conventions
 
 ## Recent Changes
+- 004-prefecture-code-reverse-lookup: Added Ruby 3.0+（3.2 以上推奨） + Rails 7.x 以上（オプション）、RSpec、SimpleCov、RuboCop
 
 - 003-csv-remove-obsolete: Added Ruby 3.x（3.2 以上推奨） + Rails 7.x、ActiveRecord、標準庫 CSV
 
