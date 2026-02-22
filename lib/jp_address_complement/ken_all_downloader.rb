@@ -66,12 +66,19 @@ module JpAddressComplement
     def write_response_to_path(response, path)
       raise DownloadError, "HTTP error: #{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
 
-      File.open(path, 'wb') { |f| IO.copy_stream(response.body_io, f) }
+      File.open(path, 'wb') do |f|
+        if response.respond_to?(:body_io)
+          IO.copy_stream(response.body_io, f)
+        else
+          f.write(response.body)
+        end
+      end
     end
 
     # @rbs (String zip_path) -> String
     def extract_zip(zip_path)
       tmpdir = Dir.mktmpdir('jp_address_complement_ken_all')
+      tmpdir = File.expand_path(tmpdir) # 相対の場合は絶対パスに正規化（realpath はシンボリックリンク解決で別パスになるため使わない）
       csv_path = extract_zip_entries(zip_path, tmpdir)
       csv_path ||= find_csv_in_dir(tmpdir)
       raise DownloadError, "ZIP 内に #{CSV_FILENAME} が見つかりません" if csv_path.nil?
@@ -87,9 +94,10 @@ module JpAddressComplement
       Zip::File.open(zip_path) do |zip_file|
         zip_file.each do |entry|
           name = entry.name.delete_prefix('/')
+          # RubyZip の extract(entry_path, destination_directory: '.') では第1引数は destination_directory に対する相対パスとして扱われる。
+          # 絶対パスを渡すと File.join(dest_dir, entry_path) で CWD が先頭に付き不正なパスになるため、エントリ名と tmpdir を分けて渡す。
+          entry.extract(name, destination_directory: tmpdir) { true } # 上書き許可
           dest = File.join(tmpdir, name)
-          FileUtils.mkdir_p(File.dirname(dest))
-          entry.extract(dest) { true } # 上書き許可
           csv_path = dest if entry_csv?(name, dest)
         end
       end
