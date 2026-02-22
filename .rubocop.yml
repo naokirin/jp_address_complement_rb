@@ -105,9 +105,6 @@ Rails/ApplicationRecord:
   Exclude:
     - "lib/jp_address_complement/models/postal_code.rb"
 
-# 日本語文字列を含む行は文字数が増えやすいため上限を緩める
-Layout/LineLength:
-  Max: 130
 
 # CsvImporter の parse_row は列数が多い CSV のパースのためやむを得ず複雑になる
 Metrics/AbcSize:
