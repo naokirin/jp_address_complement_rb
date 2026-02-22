@@ -2,6 +2,8 @@
 # contracts/rbs-public-api.md, data-model.md に準拠。rbs-inline では上書きしない。
 
 module JpAddressComplement
+  ADDRESS_RECORD_ATTRIBUTES: Array[Symbol]
+
   class AddressRecord
     attr_reader postal_code: String
     attr_reader pref_code: String
