@@ -1,4 +1,4 @@
-# 郵便番号→住所検索サンプル（Rails）
+# jp_address_complement デモ（Rails）
 
 [jp_address_complement](https://github.com/naokirin/jp_address_complement) の公開インターフェースを試せるサンプル Rails アプリです。
 
@@ -10,7 +10,7 @@
 ## セットアップ
 
 ```bash
-cd examples/rails/search_postal_code_to_address
+cd examples/rails/jp_address_complement_demo
 bundle install
 bin/rails db:create db:migrate db:seed
 ```
