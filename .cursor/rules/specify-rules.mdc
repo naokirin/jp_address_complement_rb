@@ -1,0 +1,29 @@
+# jp_address_complement_rb Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-02-23
+
+## Active Technologies
+
+- Ruby 3.x（3.2 以上推奨） + Rails 7.x、ActiveRecord、標準庫 CSV (003-csv-remove-obsolete)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+# Add commands for Ruby 3.x（3.2 以上推奨）
+
+## Code Style
+
+Ruby 3.x（3.2 以上推奨）: Follow standard conventions
+
+## Recent Changes
+
+- 003-csv-remove-obsolete: Added Ruby 3.x（3.2 以上推奨） + Rails 7.x、ActiveRecord、標準庫 CSV
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
