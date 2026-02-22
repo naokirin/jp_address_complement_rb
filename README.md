@@ -1,48 +1,184 @@
 # JpAddressComplement
 
-TODO: Delete this and the text below, and describe your gem
+日本郵便の郵便番号データ（KEN_ALL.CSV）を用いて、Rails アプリで住所の補完・検索・検証を行うための gem です。
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jp_address_complement`. To experiment with that code, run `bin/console` for an interactive prompt.
+- **郵便番号から住所を検索**（7桁完全一致・先頭4桁以上のプレフィックス検索）
+- **住所から郵便番号の逆引き**
+- **郵便番号と住所文字列の整合性検証**（フォーム用バリデーション）
+- **都道府県コード（JIS X 0401）と都道府県名の相互変換**
 
-## Installation
+## 必要環境
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+- Ruby 3.2 以上
+- Rails 7.1 以上
+- ActiveRecord 利用を前提としています
 
-Install the gem and add to the application's Gemfile by executing:
+## インストール
 
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+### 1. Gem の追加
+
+アプリの `Gemfile` に追加して `bundle install` します。
+
+```ruby
+gem 'jp_address_complement'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Bundler を使わない場合:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install jp_address_complement
 ```
 
-## Usage
+### 2. テーブルの作成
 
-TODO: Write usage instructions here
+郵便番号データを格納するマイグレーションを生成し、マイグレートします。
+
+```bash
+rails g jp_address_complement:install
+rails db:migrate
+```
+
+### 3. 住所データのインポート
+
+日本郵便の KEN_ALL.CSV をインポートする必要があります。
+
+**方法A: 公式サイトから自動ダウンロードしてインポート**
+
+```bash
+DOWNLOAD=1 rake jp_address_complement:import
+```
+
+**方法B: 手元の CSV ファイルを指定してインポート**
+
+[郵便番号データダウンロード](https://www.post.japanpost.jp/zipcode/download.html) から KEN_ALL.zip を取得し、展開した `KEN_ALL.CSV` のパスを指定します。
+
+```bash
+CSV=/path/to/KEN_ALL.CSV rake jp_address_complement:import
+```
+
+インポートには数分かかる場合があります。完了後、`jp_address_complement_postal_codes` テーブルにデータが入っている状態になります。
+
+---
+
+## 利用方法
+
+### 郵便番号から住所を検索（7桁完全一致）
+
+```ruby
+# 郵便番号はハイフン・全角・〒記号があっても自動で正規化されます
+records = JpAddressComplement.search_by_postal_code('1000001')
+# => [#<Data AddressRecord ...>, ...]
+
+records.each do |r|
+  puts "#{r.pref} #{r.city} #{r.town}"  # 例: 東京都 千代田区 千代田
+  puts r.postal_code   # "1000001"
+  puts r.pref_code     # "13" (JIS都道府県コード)
+end
+```
+
+### 郵便番号のプレフィックス検索（4桁以上）
+
+入力中の郵便番号の先頭から候補を絞り込むときに使えます。
+
+```ruby
+records = JpAddressComplement.search_by_postal_code_prefix('1000')
+# 先頭が "1000" で始まる郵便番号の住所レコードの配列
+```
+
+### 郵便番号と住所の整合性チェック
+
+「この郵便番号とこの住所の組み合わせは正しいか？」を判定します。フォームのバリデーションに利用できます。
+
+```ruby
+JpAddressComplement.valid_combination?('1000001', '東京都千代田区千代田')
+# => true
+
+JpAddressComplement.valid_combination?('1000001', '大阪府大阪市北区')
+# => false
+```
+
+### モデルでのバリデーション（AddressValidator）
+
+`ActiveModel::Validations` と組み合わせて、郵便番号と住所フィールドの組み合わせを検証できます。
+
+```ruby
+class Order
+  include ActiveModel::Model
+  include ActiveModel::Validations
+
+  attr_accessor :postal_code, :address
+
+  validates :postal_code, presence: true
+  validates :address, presence: true
+  validates_with JpAddressComplement::AddressValidator,
+                 postal_code_field: :postal_code,
+                 address_field: :address
+end
+```
+
+`postal_code_field` / `address_field` を省略すると、それぞれ `:postal_code` / `:address` が使われます。
+
+### 都道府県コードと都道府県名の変換
+
+JIS X 0401 の都道府県コード（01〜47）と都道府県名の相互変換ができます。
+
+```ruby
+JpAddressComplement.prefecture_name_from_code(13)
+# => "東京都"
+JpAddressComplement.prefecture_name_from_code('13')
+# => "東京都"
+
+JpAddressComplement.prefecture_code_from_name('東京都')
+# => "13"
+```
+
+### 住所から郵便番号を逆引き
+
+都道府県・市区町村・町域を指定して、対応する郵便番号の一覧を取得します。
+
+```ruby
+codes = JpAddressComplement.search_postal_codes_by_address(
+  pref: '東京都',
+  city: '千代田区',
+  town: '千代田'
+)
+# => ["1000001"] など、該当する郵便番号の配列
+```
+
+`town` は省略可能です。その場合は都道府県＋市区町村で検索されます。
+
+### 設定のカスタマイズ（任意）
+
+リポジトリ（データ取得の実装）を差し替えたい場合は、Rails の初期化処理などで設定できます。
+
+```ruby
+# config/initializers/jp_address_complement.rb
+JpAddressComplement.configure do |config|
+  config.repository = MyApp::CustomPostalCodeRepository.new
+end
+```
+
+---
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+リポジトリをクローンしたあと、`bin/setup` で依存関係を入れます。`bin/console` で対話的にコードを試せます。
 
-### Type checking (RBS / Steep)
+### 型チェック（RBS / Steep）
 
-This gem uses [RBS](https://github.com/ruby/rbs) and [Steep](https://github.com/soutaro/steep) for static type checking. Contributors can run type checks locally:
+本 gem は [RBS](https://github.com/ruby/rbs) と [Steep](https://github.com/soutaro/steep) で静的型チェックを行っています。
 
 ```bash
 bundle install
-bundle exec rbs collection install   # optional: install third-party RBS (Rails, etc.)
-bundle exec rake rbs:generate       # generate sig/ from rbs-inline annotations
-bundle exec rake steep              # type check (must exit 0 to pass CI)
+bundle exec rbs collection install   # 任意: サードパーティ RBS のインストール
+bundle exec rake rbs:generate        # sig/ を rbs-inline から生成
+bundle exec rake steep               # 型チェック（CI では exit 0 が必須）
 ```
 
-See [specs/002-rbs-type-annotations/quickstart.md](specs/002-rbs-type-annotations/quickstart.md) for the full workflow and annotation syntax.
+詳細は [specs/002-rbs-type-annotations/quickstart.md](specs/002-rbs-type-annotations/quickstart.md) を参照してください。
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+ローカルに gem をインストールするには `bundle exec rake install` を実行します。新バージョンをリリースする場合は `lib/jp_address_complement/version.rb` のバージョンを更新し、`bundle exec rake release` でタグの作成・プッシュと [RubyGems.org](https://rubygems.org) への push が行われます。
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/jp_address_complement.
+バグ報告やプルリクエストは [GitHub のリポジトリ](https://github.com/naokirin/jp_address_complement) で歓迎しています。
