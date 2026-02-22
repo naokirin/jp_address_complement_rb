@@ -1,3 +1,6 @@
+# Rails credentials (master key must not be committed)
+config/master.key
+
 # sqlite database
 storage/*.sqlite3*
 
