@@ -5,6 +5,7 @@ PATH
       activerecord (>= 7.1)
       csv (>= 3.0)
       railties (>= 7.1)
+      rubyzip (>= 2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -203,6 +204,7 @@ GEM
       tsort
     reline (0.6.3)
       io-console (~> 0.5)
+    rubyzip (3.2.2)
     securerandom (0.4.1)
     sqlite3 (2.9.0-aarch64-linux-gnu)
     sqlite3 (2.9.0-aarch64-linux-musl)

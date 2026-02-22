@@ -23,6 +23,18 @@
   </head>
 
   <body>
+    <nav style="margin-bottom: 1.5rem; padding: 0.5rem 0; border-bottom: 1px solid #ccc;">
+      <strong>JpAddressComplement デモ:</strong>
+      <%= link_to "郵便番号→住所（7桁）", addresses_path %>
+      |
+      <%= link_to "プレフィックス検索", addresses_prefix_path %>
+      |
+      <%= link_to "整合性チェック", addresses_validate_path %>
+      |
+      <%= link_to "都道府県コード⇔名", addresses_prefecture_path %>
+      |
+      <%= link_to "住所→郵便番号の逆引き", addresses_reverse_path %>
+    </nav>
     <%= yield %>
   </body>
 </html>

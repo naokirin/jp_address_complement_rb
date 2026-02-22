@@ -12,4 +12,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "addresses#index"
   get "addresses", to: "addresses#index", as: :addresses
+  get "addresses/prefix", to: "addresses#prefix", as: :addresses_prefix
+  get "addresses/validate", to: "addresses#validate", as: :addresses_validate
+  get "addresses/prefecture", to: "addresses#prefecture", as: :addresses_prefecture
+  get "addresses/reverse", to: "addresses#reverse", as: :addresses_reverse
 end

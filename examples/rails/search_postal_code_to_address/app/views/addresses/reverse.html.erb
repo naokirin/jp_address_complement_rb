@@ -1,0 +1,27 @@
+<h1>住所から郵便番号の逆引き</h1>
+<p>都道府県・市区町村・町域を指定して、対応する郵便番号の一覧を取得します。町域は省略可能です。</p>
+
+<%= form_with url: addresses_reverse_path, method: :get, local: true do |f| %>
+  <p>
+    <%= f.label :pref, '都道府県' %>
+    <%= f.text_field :pref, value: @pref, placeholder: '東京都', size: 12 %>
+  </p>
+  <p>
+    <%= f.label :city, '市区町村' %>
+    <%= f.text_field :city, value: @city, placeholder: '千代田区', size: 16 %>
+  </p>
+  <p>
+    <%= f.label :town, '町域（任意）' %>
+    <%= f.text_field :town, value: @town, placeholder: '千代田', size: 20 %>
+  </p>
+  <p><%= f.submit '郵便番号を検索' %></p>
+<% end %>
+
+<% if @pref.present? && @city.present? %>
+  <h2>検索結果</h2>
+  <% if @postal_codes.any? %>
+    <p>該当する郵便番号: <%= @postal_codes.join(', ') %></p>
+  <% else %>
+    <p>該当する郵便番号はありません。</p>
+  <% end %>
+<% end %>

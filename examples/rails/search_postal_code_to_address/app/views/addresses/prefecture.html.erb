@@ -1,0 +1,20 @@
+<h1>都道府県コードと都道府県名の変換</h1>
+<p>JIS X 0401 の都道府県コード（01〜47）と都道府県名の相互変換ができます。どちらか一方、または両方入力して試せます。</p>
+
+<%= form_with url: addresses_prefecture_path, method: :get, local: true do |f| %>
+  <p>
+    <%= f.label :code, '都道府県コード → 都道府県名' %>
+    <%= f.text_field :code, value: @code, placeholder: '13', maxlength: 2, size: 4 %>
+    <% if @code_to_name != nil %>
+      → <strong><%= @code_to_name || '（該当なし）' %></strong>
+    <% end %>
+  </p>
+  <p>
+    <%= f.label :name, '都道府県名 → 都道府県コード' %>
+    <%= f.text_field :name, value: @name, placeholder: '東京都', size: 12 %>
+    <% if @name_to_code != nil %>
+      → <strong><%= @name_to_code || '（該当なし）' %></strong>
+    <% end %>
+  </p>
+  <p><%= f.submit '変換' %></p>
+<% end %>

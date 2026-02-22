@@ -1,0 +1,25 @@
+<h1>郵便番号のプレフィックス検索</h1>
+<p>郵便番号の先頭4桁以上を入力すると、そのプレフィックスに一致する住所候補を返します。入力中の補完に利用できます。</p>
+
+<%= form_with url: addresses_prefix_path, method: :get, local: true do |f| %>
+  <p>
+    <%= f.label :prefix, '郵便番号（先頭4桁以上）' %>
+    <%= f.text_field :prefix, value: @prefix, placeholder: '1000', maxlength: 8, size: 10 %>
+    <%= f.submit '検索' %>
+  </p>
+<% end %>
+
+<% if @prefix.present? %>
+  <h2>検索結果（<%= @prefix %> で始まる郵便番号）</h2>
+  <% if @prefix.length < 4 %>
+    <p>4桁以上入力してください。</p>
+  <% elsif @addresses.any? %>
+    <ul>
+      <% @addresses.each do |addr| %>
+        <li><%= addr.postal_code %>: <%= addr.pref %><%= addr.city %><%= addr.town %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>該当する住所はありません。</p>
+  <% end %>
+<% end %>

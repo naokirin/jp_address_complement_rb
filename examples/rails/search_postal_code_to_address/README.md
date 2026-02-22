@@ -1,6 +1,6 @@
 # 郵便番号→住所検索サンプル（Rails）
 
-[jp_address_complement](https://github.com/naokirin/jp_address_complement) を使い、郵便番号から住所を検索する最小限の Rails アプリです。
+[jp_address_complement](https://github.com/naokirin/jp_address_complement) の公開インターフェースを試せるサンプル Rails アプリです。
 
 ## 前提
 
@@ -21,7 +21,15 @@ bin/rails db:create db:migrate db:seed
 bin/rails server
 ```
 
-ブラウザで http://localhost:3000 を開き、郵便番号（例: `1000001` または `100-0001`）を入力して「検索」を押すと住所一覧が表示されます。
+ブラウザで http://localhost:3000 を開くと、画面上部のナビから次の5つのデモを試せます。
+
+| デモ | 対応 API | 説明 |
+|------|----------|------|
+| 郵便番号→住所（7桁） | `search_by_postal_code` | 7桁完全一致で住所を検索 |
+| プレフィックス検索 | `search_by_postal_code_prefix` | 先頭4桁以上で候補を絞り込み |
+| 整合性チェック | `valid_combination?` | 郵便番号と住所の組み合わせが正しいか判定 |
+| 都道府県コード⇔名 | `prefecture_name_from_code` / `prefecture_code_from_name` | JIS都道府県コードと都道府県名の相互変換 |
+| 住所→郵便番号の逆引き | `search_postal_codes_by_address` | 都道府県・市区町村・町域から郵便番号一覧を取得 |
 
 ## サンプルデータ
 
@@ -43,7 +51,7 @@ CSV=/path/to/KEN_ALL.CSV bin/rails jp_address_complement:import
 
 ## 構成
 
-- **ルート** `/` … 郵便番号入力フォームと検索結果
-- **コントローラ** `AddressesController#index` … `JpAddressComplement.search_by_postal_code` を呼び出し
+- **ルート** `/` … 各デモへのナビと郵便番号→住所（7桁）のフォーム
+- **コントローラ** `AddressesController` … 各アクションで `JpAddressComplement` の API を呼び出し
 - **DB** SQLite（`storage/development.sqlite3`）
 - **gem** `jp_address_complement` を Gemfile の `path: "../../../"` で参照

@@ -1,0 +1,23 @@
+<h1>郵便番号と住所の整合性チェック</h1>
+<p>「この郵便番号とこの住所の組み合わせは正しいか？」を判定します。フォームのバリデーションに利用できます。</p>
+
+<%= form_with url: addresses_validate_path, method: :get, local: true do |f| %>
+  <p>
+    <%= f.label :postal_code, '郵便番号' %>
+    <%= f.text_field :postal_code, value: @postal_code, placeholder: '1000001', maxlength: 8, size: 10 %>
+  </p>
+  <p>
+    <%= f.label :address, '住所' %>
+    <%= f.text_field :address, value: @address, placeholder: '東京都千代田区千代田', size: 40 %>
+  </p>
+  <p><%= f.submit '整合性をチェック' %></p>
+<% end %>
+
+<% if @valid != nil %>
+  <h2>結果</h2>
+  <% if @valid %>
+    <p style="color: green;">✓ この郵便番号と住所の組み合わせは正しいです。</p>
+  <% else %>
+    <p style="color: #c00;">✗ この郵便番号と住所の組み合わせは一致しません。</p>
+  <% end %>
+<% end %>
