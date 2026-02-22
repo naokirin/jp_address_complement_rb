@@ -3,3 +3,6 @@ storage/*.sqlite3
 
 # log files
 log/*.log
+
+# temporary backup (e.g. moved during git history rewrite)
+.backup/
