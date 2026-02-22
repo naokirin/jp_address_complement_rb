@@ -42,6 +42,17 @@ module JpAddressComplement
       configuration.postal_code_model_base = klass
     end
 
+    # PostalCode が参照するテーブル名。未設定時は 'jp_address_complement_postal_codes'。configuration.postal_code_table_name に委譲。
+    # @rbs () -> String
+    def postal_code_table_name
+      configuration.postal_code_table_name || 'jp_address_complement_postal_codes'
+    end
+
+    # @rbs (String) -> void
+    def postal_code_table_name=(name)
+      configuration.postal_code_table_name = name
+    end
+
     # 設定をリセットする（主にテスト用）
     # @rbs () -> void
     def reset_configuration!

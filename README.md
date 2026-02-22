@@ -157,6 +157,8 @@ JpAddressComplement.configure do |config|
   config.repository = MyApp::CustomPostalCodeRepository.new
   # PostalCode モデルの継承元（未設定時は ActiveRecord::Base）
   config.postal_code_model_base = ApplicationRecord
+  # 郵便番号テーブル名（未設定時は 'jp_address_complement_postal_codes'）。マイグレーションで別名のテーブルを作った場合に指定
+  config.postal_code_table_name = 'my_postal_codes'
 end
 ```
 
