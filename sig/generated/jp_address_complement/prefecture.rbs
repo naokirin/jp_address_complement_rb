@@ -1,0 +1,27 @@
+# Generated from lib/jp_address_complement/prefecture.rb with RBS::Inline
+
+module JpAddressComplement
+  # JIS X 0401 都道府県コード（01–47）⇔都道府県名の変換
+  module Prefecture
+    # JIS X 0401 都道府県コード → 都道府県名（正式名称）
+    CODE_TO_NAME: untyped
+
+    NAME_TO_CODE: untyped
+
+    # 都道府県コードから都道府県名を返す
+    # @rbs (String | Integer | nil) -> String?
+    # @param code [String, Integer, nil] 都道府県コード（01–47）。数値またはゼロパディング文字列
+    # @return [String, nil] 都道府県名。該当なし・不正入力時は nil
+    def self.name_from_code: (String | Integer | nil) -> String?
+
+    # 都道府県名（正式名称）から都道府県コードを2桁文字列で返す
+    # @rbs (String?) -> String?
+    # @param name [String, nil] 都道府県の正式名称
+    # @return [String, nil] 2桁のコード（例: "13"）。該当なし時は nil
+    def self.code_from_name: (String?) -> String?
+
+    def self.normalize_code: (untyped code) -> untyped
+
+    def self.normalize_code_string: (untyped stripped) -> untyped
+  end
+end

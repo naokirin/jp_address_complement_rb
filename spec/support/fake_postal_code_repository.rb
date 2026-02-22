@@ -20,6 +20,13 @@ module JpAddressComplement
       @records.select { |r| r.postal_code.start_with?(prefix) }
     end
 
+    def find_postal_codes_by_address(pref:, city:, town: nil)
+      return [] if blank?(pref) || blank?(city)
+
+      selected = @records.select { |r| address_match?(r, pref, city, town) }
+      selected.map(&:postal_code).uniq
+    end
+
     def add(record)
       @records << record
       self
@@ -28,6 +35,19 @@ module JpAddressComplement
     def clear
       @records.clear
       self
+    end
+
+    private
+
+    def blank?(value)
+      value.nil? || value.to_s.strip.empty?
+    end
+
+    def address_match?(record, pref, city, town)
+      return false unless record.pref == pref && record.city == city
+      return true if town.nil? || town.to_s.strip.empty?
+
+      record.town == town
     end
   end
 end

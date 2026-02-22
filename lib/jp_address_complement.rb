@@ -7,6 +7,7 @@ require_relative 'jp_address_complement/normalizer'
 require_relative 'jp_address_complement/configuration'
 require_relative 'jp_address_complement/repositories/postal_code_repository'
 require_relative 'jp_address_complement/searcher'
+require_relative 'jp_address_complement/prefecture'
 
 # Rails 環境でのみ Railtie をロード
 require_relative 'jp_address_complement/railtie' if defined?(Rails)
@@ -66,6 +67,32 @@ module JpAddressComplement
     # @return [Boolean]
     def valid_combination?(postal_code, address)
       Searcher.new(repository).valid_combination?(postal_code, address)
+    end
+
+    # 都道府県コード（JIS X 0401）から都道府県名を返す
+    # @rbs (String | Integer?) -> String?
+    # @param code [String, Integer, nil] 都道府県コード（01–47）
+    # @return [String, nil] 都道府県名。該当なし時は nil
+    def prefecture_name_from_code(code)
+      Prefecture.name_from_code(code)
+    end
+
+    # 都道府県名（正式名称）から都道府県コードを2桁文字列で返す
+    # @rbs (String?) -> String?
+    # @param name [String, nil] 都道府県の正式名称
+    # @return [String, nil] 2桁のコード（例: "13"）。該当なし時は nil
+    def prefecture_code_from_name(name)
+      Prefecture.code_from_name(name)
+    end
+
+    # 都道府県・市区町村・町域から郵便番号候補を取得する（逆引き）
+    # @rbs (String? pref, String? city, String? town) -> Array[String]
+    # @param pref [String] 都道府県名（正式名称）
+    # @param city [String] 市区町村名
+    # @param town [String, nil] 町域名。省略可
+    # @return [Array<String>] 郵便番号の配列。該当なし・入力不十分時は []
+    def search_postal_codes_by_address(pref:, city:, town: nil)
+      Searcher.new(repository).search_postal_codes_by_address(pref: pref, city: city, town: town)
     end
 
     private

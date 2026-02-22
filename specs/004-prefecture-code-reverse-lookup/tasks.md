@@ -23,9 +23,9 @@
 
 **Purpose**: 既存 gem のテスト・Lint が通ることを確認し、004 実装の前提を満たす
 
-- [ ] T001 [P] 既存の RSpec がすべてパスすることを確認する（`bundle exec rspec`）
+- [x] T001 [P] 既存の RSpec がすべてパスすることを確認する（`bundle exec rspec`）
 - [ ] T002 [P] 既存の Rubocop がパスすることを確認する（`bundle exec rubocop`）
-- [ ] T003 既存の SimpleCov カバレッジを確認し、90% 以上であることを記録する
+- [x] T003 既存の SimpleCov カバレッジを確認し、90% 以上であることを記録する
 
 **Checkpoint**: 現状の green ベースラインが取れていること
 
@@ -47,12 +47,12 @@
 
 ### Tests for User Story 1（TDD: 先にテストを書き、失敗を確認する）
 
-- [ ] T004 [P] [US1] `prefecture_name_from_code` のスペックを追加する（有効コード・ゼロパッド・存在しないコード・nil・空文字。47都道府県すべてのコード⇔名称が正しく動作することを 1 件以上の代表例で検証し、必要に応じて全件ループで検証する） in `spec/jp_address_complement/prefecture_spec.rb`
+- [x] T004 [P] [US1] `prefecture_name_from_code` のスペックを追加する（有効コード・ゼロパッド・存在しないコード・nil・空文字。47都道府県すべてのコード⇔名称が正しく動作することを 1 件以上の代表例で検証し、必要に応じて全件ループで検証する） in `spec/jp_address_complement/prefecture_spec.rb`
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] JIS X 0401 の 47 都道府県マッピング定数と `name_from_code` を実装する in `lib/jp_address_complement/prefecture.rb`
-- [ ] T006 [US1] モジュールメソッド `JpAddressComplement.prefecture_name_from_code` を追加する in `lib/jp_address_complement.rb`
+- [x] T005 [US1] JIS X 0401 の 47 都道府県マッピング定数と `name_from_code` を実装する in `lib/jp_address_complement/prefecture.rb`
+- [x] T006 [US1] モジュールメソッド `JpAddressComplement.prefecture_name_from_code` を追加する in `lib/jp_address_complement.rb`
 
 **Checkpoint**: User Story 1 が単体で動作し、`prefecture_name_from_code("13")` で "東京都" が返る
 
@@ -66,12 +66,12 @@
 
 ### Tests for User Story 2（TDD: 先にテストを書き、失敗を確認する）
 
-- [ ] T007 [P] [US2] `prefecture_code_from_name` のスペックを追加する（正式名称・省略表記で nil・存在しない・nil・空文字。47都道府県すべて名称→コードが正しく動作することを代表例または全件で検証する） in `spec/jp_address_complement/prefecture_spec.rb`
+- [x] T007 [P] [US2] `prefecture_code_from_name` のスペックを追加する（正式名称・省略表記で nil・存在しない・nil・空文字。47都道府県すべて名称→コードが正しく動作することを代表例または全件で検証する） in `spec/jp_address_complement/prefecture_spec.rb`
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] `code_from_name` と名称→コード用マッピングを追加する in `lib/jp_address_complement/prefecture.rb`
-- [ ] T009 [US2] モジュールメソッド `JpAddressComplement.prefecture_code_from_name` を追加する in `lib/jp_address_complement.rb`
+- [x] T008 [US2] `code_from_name` と名称→コード用マッピングを追加する in `lib/jp_address_complement/prefecture.rb`
+- [x] T009 [US2] モジュールメソッド `JpAddressComplement.prefecture_code_from_name` を追加する in `lib/jp_address_complement.rb`
 
 **Checkpoint**: User Story 2 が単体で動作し、`prefecture_code_from_name("東京都")` で "13" が返る
 
@@ -85,15 +85,15 @@
 
 ### Tests for User Story 3（TDD: 先にテストを書き、失敗を確認する）
 
-- [ ] T010 [P] [US3] `find_postal_codes_by_address` のスペックを追加する（pref+city+town / pref+city のみ / 入力不十分で [] / 該当なしで []） in `spec/repositories/active_record_postal_code_repository_spec.rb`
-- [ ] T011 [P] [US3] `search_postal_codes_by_address` のスペックを追加する（FakeRepository に `find_postal_codes_by_address` をスタブまたは実装して使用。正常・空・nil/空文字で [] のケースを含める） in `spec/searcher_spec.rb`
+- [x] T010 [P] [US3] `find_postal_codes_by_address` のスペックを追加する（pref+city+town / pref+city のみ / 入力不十分で [] / 該当なしで []） in `spec/repositories/active_record_postal_code_repository_spec.rb`
+- [x] T011 [P] [US3] `search_postal_codes_by_address` のスペックを追加する（FakeRepository に `find_postal_codes_by_address` をスタブまたは実装して使用。正常・空・nil/空文字で [] のケースを含める） in `spec/searcher_spec.rb`
 
 ### Implementation for User Story 3
 
-- [ ] T012 [US3] `find_postal_codes_by_address(pref:, city:, town: nil)` をインターフェースに追加する in `lib/jp_address_complement/repositories/postal_code_repository.rb`
-- [ ] T013 [US3] `find_postal_codes_by_address` を完全一致クエリで実装する（重複除く） in `lib/jp_address_complement/repositories/active_record_postal_code_repository.rb`
-- [ ] T014 [US3] `search_postal_codes_by_address(pref:, city:, town: nil)` を追加し Repository を呼ぶ in `lib/jp_address_complement/searcher.rb`
-- [ ] T015 [US3] モジュールメソッド `JpAddressComplement.search_postal_codes_by_address` を追加する in `lib/jp_address_complement.rb`
+- [x] T012 [US3] `find_postal_codes_by_address(pref:, city:, town: nil)` をインターフェースに追加する in `lib/jp_address_complement/repositories/postal_code_repository.rb`
+- [x] T013 [US3] `find_postal_codes_by_address` を完全一致クエリで実装する（重複除く） in `lib/jp_address_complement/repositories/active_record_postal_code_repository.rb`
+- [x] T014 [US3] `search_postal_codes_by_address(pref:, city:, town: nil)` を追加し Repository を呼ぶ in `lib/jp_address_complement/searcher.rb`
+- [x] T015 [US3] モジュールメソッド `JpAddressComplement.search_postal_codes_by_address` を追加する in `lib/jp_address_complement.rb`
 
 **Checkpoint**: User Story 3 が単体で動作し、逆引きで郵便番号配列が返る
 
@@ -103,9 +103,9 @@
 
 **Purpose**: 複数ストーリーにまたがる仕上げ
 
-- [ ] T016 [P] 新規 API 3 件（prefecture_name_from_code, prefecture_code_from_name, search_postal_codes_by_address）を CHANGELOG に追記する
+- [x] T016 [P] 新規 API 3 件（prefecture_name_from_code, prefecture_code_from_name, search_postal_codes_by_address）を CHANGELOG に追記する
 - [ ] T017 全ファイルで `bundle exec rubocop` を実行し、警告・エラーを解消する
-- [ ] T018 全テストを実行し、SimpleCov でカバレッジ 90% 以上を満たすことを確認する（`bundle exec rspec`）
+- [x] T018 全テストを実行し、SimpleCov でカバレッジ 90% 以上を満たすことを確認する（`bundle exec rspec`）
 - [ ] T019 [P] quickstart.md の手順で 3 API の動作を手動確認する（任意）
 
 ---

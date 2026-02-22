@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 gemspec
 
-# RuboCop extensions（バージョン固定で rubocop-rspec_rails クラッシュを回避）
+# RuboCop extensions（3.x では Capybara/FactoryBot は別 gem のため rubocop-capybara / rubocop-factory_bot を追加）
+gem "rubocop-capybara", "~> 2.21"
+gem "rubocop-factory_bot", "~> 2.25"
 gem "rubocop-rails", "~> 2.23"
-gem "rubocop-rspec", "~> 2.26.0"  # 2.29+ は rubocop-rspec_rails に依存しクラッシュする
+gem "rubocop-rspec", "~> 3.0"

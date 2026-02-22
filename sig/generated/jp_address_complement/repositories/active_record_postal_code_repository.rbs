@@ -15,6 +15,9 @@ module JpAddressComplement
       # @return [Array<AddressRecord>]
       def find_by_prefix: (String prefix) -> Array[AddressRecord]
 
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
+      def find_postal_codes_by_address: (pref: String?, city: String?, ?town: String?) -> Array[String]
+
       private
 
       # @rbs () -> singleton(PostalCode)

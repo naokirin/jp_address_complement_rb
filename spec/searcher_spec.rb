@@ -162,4 +162,34 @@ RSpec.describe JpAddressComplement::Searcher do
       end
     end
   end
+
+  describe '#search_postal_codes_by_address', :us3 do
+    context 'when pref・city・town を指定した場合' do
+      it '該当する郵便番号の配列を返す' do
+        results = searcher.search_postal_codes_by_address(pref: '東京都', city: '千代田区', town: '千代田')
+        expect(results).to eq(['1000001'])
+      end
+    end
+
+    context 'when pref・city のみ（town 省略）の場合' do
+      it 'その都道府県・市区町村に属する郵便番号を返す' do
+        results = searcher.search_postal_codes_by_address(pref: '東京都', city: '千代田区')
+        expect(results).to include('1000001')
+      end
+    end
+
+    context 'when 該当する住所が存在しない場合' do
+      it '空配列を返す' do
+        expect(searcher.search_postal_codes_by_address(pref: '東京都', city: '存在しない区')).to eq([])
+      end
+    end
+
+    context 'when pref または city が nil/空の場合' do
+      it '例外を発生させず空配列を返す' do
+        expect(searcher.search_postal_codes_by_address(pref: '東京都', city: nil)).to eq([])
+        expect(searcher.search_postal_codes_by_address(pref: nil, city: '千代田区')).to eq([])
+        expect(searcher.search_postal_codes_by_address(pref: '東京都', city: '')).to eq([])
+      end
+    end
+  end
 end

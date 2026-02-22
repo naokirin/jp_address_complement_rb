@@ -2,6 +2,22 @@
 
 module JpAddressComplement
   module Importers
+    # インポート結果（件数報告用）
+    # @rbs type upserted = Integer
+    # @rbs type deleted = Integer
+    class ImportResult < Data
+      attr_reader upserted(): untyped
+
+      attr_reader deleted(): untyped
+
+      def self.new: (untyped upserted, untyped deleted) -> instance
+                  | (upserted: untyped, deleted: untyped) -> instance
+
+      def self.members: () -> [ :upserted, :deleted ]
+
+      def members: () -> [ :upserted, :deleted ]
+    end
+
     # KEN_ALL.CSV を読み込み、jp_address_complement_postal_codes テーブルに upsert する
     # Shift_JIS 形式の CSV を自動で UTF-8 に変換して処理する
     class CsvImporter
@@ -33,18 +49,29 @@ module JpAddressComplement
       # @rbs (String csv_path) -> void
       def initialize: (String csv_path) -> void
 
-      # CSV を読み込んでバッチ upsert する
-      # @rbs () -> Integer
-      # @return [Integer] インポートされた行数
-      def import: () -> Integer
+      # CSV を読み込み、upsert 後に古いバージョンの行を一括削除する。戻り値は ImportResult。
+      # バージョンは既存レコードの最大値+1 で、別テーブルでは管理しない。
+      # @rbs () -> ImportResult
+      # @return [ImportResult] upserted 件数と deleted 件数
+      def import: () -> ImportResult
 
       private
 
       # @rbs (Array[String?] row) -> (Hash[Symbol, untyped] | nil)
       def parse_row: (Array[String?] row) -> (Hash[Symbol, untyped] | nil)
 
+      # @rbs (Integer import_version) -> [Integer, Hash[untyped, bool]]
+      def read_and_upsert: (Integer import_version) -> [ Integer, Hash[untyped, bool] ]
+
       # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def upsert_batch: (Array[Hash[Symbol, untyped]] batch) -> void
+
+      # @rbs (Hash[Symbol, untyped] record) -> Array[String]
+      def row_key: (Hash[Symbol, untyped] record) -> Array[String]
+
+      # 今回のインポートより古いバージョンの行を一括削除し、削除件数を返す
+      # @rbs (Integer import_version) -> Integer
+      def delete_obsolete: (Integer import_version) -> Integer
     end
   end
 end

@@ -54,5 +54,18 @@ module JpAddressComplement
         address.include?(full_address)
       end
     end
+
+    # 都道府県・市区町村・町域から郵便番号候補を取得する（逆引き）
+    # @rbs (String? pref, String? city, String? town) -> Array[String]
+    # @param pref [String] 都道府県名（正式名称）
+    # @param city [String] 市区町村名
+    # @param town [String, nil] 町域名。省略時は都道府県＋市区町村のみで検索
+    # @return [Array<String>] 郵便番号の配列。該当なし・入力不十分時は []
+    def search_postal_codes_by_address(pref:, city:, town: nil)
+      return [] if pref.nil? || pref.to_s.strip.empty?
+      return [] if city.nil? || city.to_s.strip.empty?
+
+      @repository.find_postal_codes_by_address(pref: pref, city: city, town: town)
+    end
   end
 end

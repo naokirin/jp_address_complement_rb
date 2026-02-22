@@ -45,6 +45,26 @@ module JpAddressComplement
   # @return [Boolean]
   def self.valid_combination?: (String, String) -> bool
 
+  # 都道府県コード（JIS X 0401）から都道府県名を返す
+  # @rbs (String | Integer?) -> String?
+  # @param code [String, Integer, nil] 都道府県コード（01–47）
+  # @return [String, nil] 都道府県名。該当なし時は nil
+  def self.prefecture_name_from_code: (String | Integer?) -> String?
+
+  # 都道府県名（正式名称）から都道府県コードを2桁文字列で返す
+  # @rbs (String?) -> String?
+  # @param name [String, nil] 都道府県の正式名称
+  # @return [String, nil] 2桁のコード（例: "13"）。該当なし時は nil
+  def self.prefecture_code_from_name: (String?) -> String?
+
+  # 都道府県・市区町村・町域から郵便番号候補を取得する（逆引き）
+  # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
+  # @param pref [String] 都道府県名（正式名称）
+  # @param city [String] 市区町村名
+  # @param town [String, nil] 町域名。省略可
+  # @return [Array<String>] 郵便番号の配列。該当なし・入力不十分時は []
+  def self.search_postal_codes_by_address: (pref: String?, city: String?, ?town: String?) -> Array[String]
+
   # @rbs () -> Repositories::ActiveRecordPostalCodeRepository
   private def self.default_repository: () -> Repositories::ActiveRecordPostalCodeRepository
 end

@@ -1,7 +1,7 @@
 plugins:
+  - rubocop-capybara
+  - rubocop-factory_bot
   - rubocop-rails
-
-require:
   - rubocop-rspec
 
 AllCops:
@@ -13,6 +13,8 @@ AllCops:
     - "sig/**/*"
     - "vendor/**/*"
     - "specs/**/*"
+    - "examples/**/*"
+    - "Gemfile"
 
 # Gemspec の development dependency は gemspec 内で管理
 Gemspec/DevelopmentDependencies:
@@ -59,10 +61,10 @@ RSpec/DescribeClass:
     - "spec/performance_spec.rb"
 
 # RSpec spec パスのディレクトリ構成を許容（spec/ 直下に rb ファイルを置きたい場合）
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Enabled: false
 
-RSpec/SpecFilePathFormat:
+RSpec/SpecFilePathSuffix:
   Enabled: false
 
 # context の日本語記述の等を許容
@@ -122,7 +124,6 @@ Rails/RakeEnvironment:
 Rails/ApplicationRecord:
   Exclude:
     - "lib/jp_address_complement/models/postal_code.rb"
-
 
 # CsvImporter の parse_row は列数が多い CSV のパースのためやむを得ず複雑になる
 Metrics/AbcSize:

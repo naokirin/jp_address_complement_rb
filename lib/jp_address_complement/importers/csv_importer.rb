@@ -77,9 +77,9 @@ module JpAddressComplement
         }
       end
 
-      # @rbs (Integer import_version) -> [Integer, Hash]
+      # @rbs (Integer import_version) -> [Integer, Hash[untyped, bool]]
       def read_and_upsert(import_version)
-        keys_in_csv = {}
+        keys_in_csv = {} #: Hash[untyped, bool]
         total_upserted = 0
         batch = [] #: Array[Hash[Symbol, untyped]]
 

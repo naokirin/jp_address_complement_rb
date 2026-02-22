@@ -75,4 +75,38 @@ RSpec.describe JpAddressComplement::Repositories::ActiveRecordPostalCodeReposito
       end
     end
   end
+
+  describe '#find_postal_codes_by_address', :us3 do
+    context 'when pref + city + town を指定した場合' do
+      it '該当する郵便番号の配列を返す（重複除く）' do
+        results = repo.find_postal_codes_by_address(pref: '東京都', city: '千代田区', town: '千代田')
+        expect(results).to be_an(Array)
+        expect(results).to all(be_a(String))
+        expect(results).to include('1000001')
+        expect(results.uniq).to eq(results)
+      end
+    end
+
+    context 'when pref + city のみ（town 省略）の場合' do
+      it 'その都道府県・市区町村に属する郵便番号を返す' do
+        results = repo.find_postal_codes_by_address(pref: '東京都', city: '千代田区', town: nil)
+        expect(results).to be_an(Array)
+        expect(results).to include('1000001')
+      end
+    end
+
+    context 'when 入力不十分（pref または city が空）の場合' do
+      it '空配列を返す' do
+        expect(repo.find_postal_codes_by_address(pref: '東京都', city: nil)).to eq([])
+        expect(repo.find_postal_codes_by_address(pref: nil, city: '千代田区')).to eq([])
+        expect(repo.find_postal_codes_by_address(pref: '東京都', city: '')).to eq([])
+      end
+    end
+
+    context 'when 該当する住所が存在しない場合' do
+      it '空配列を返す' do
+        expect(repo.find_postal_codes_by_address(pref: '東京都', city: '存在しない区')).to eq([])
+      end
+    end
+  end
 end
