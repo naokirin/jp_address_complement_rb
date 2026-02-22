@@ -4,5 +4,11 @@ module JpAddressComplement
   # 住所テーブル (jp_address_complement_postal_codes) に対応する ActiveRecord モデル
   # @rbs inherits ActiveRecord::Base
   class PostalCode < ActiveRecord::Base
+    # Steep 用: ActiveRecord のクラスメソッド（rbs-inline で generated に含める）
+    # @rbs (*untyped) -> untyped
+    def self.where: (*untyped) -> untyped
+
+    # @rbs (Symbol column) -> untyped
+    def self.maximum: (Symbol column) -> untyped
   end
 end

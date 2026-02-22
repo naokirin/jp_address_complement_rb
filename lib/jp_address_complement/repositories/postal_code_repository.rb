@@ -23,7 +23,7 @@ module JpAddressComplement
       end
 
       # 都道府県・市区町村・町域で完全一致検索し、郵便番号の配列を返す（逆引き）
-      # @rbs (String? pref, String? city, String? town) -> Array[String]
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
       # @param pref [String] 都道府県名（正式名称）
       # @param city [String] 市区町村名
       # @param town [String, nil] 町域名。省略時は都道府県＋市区町村のみで検索

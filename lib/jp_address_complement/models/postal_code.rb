@@ -13,5 +13,10 @@ module JpAddressComplement
     validates :pref_code, presence: true
     validates :pref, presence: true
     validates :city, presence: true
+
+    # Steep 用: ActiveRecord のクラスメソッド（rbs-inline で generated に含める）
+    # @rbs (*untyped) -> untyped
+    def self.where(*_args) = super
+    # @rbs (Symbol column) -> untyped
   end
 end

@@ -23,7 +23,7 @@ module JpAddressComplement
         postal_code_model.where('postal_code LIKE ?', "#{prefix}%").map { |ar| to_record(ar) } # steep:ignore
       end
 
-      # @rbs (String? pref, String? city, String? town) -> Array[String]
+      # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
       def find_postal_codes_by_address(pref:, city:, town: nil)
         return [] if pref.nil? || pref.to_s.strip.empty?
         return [] if city.nil? || city.to_s.strip.empty?

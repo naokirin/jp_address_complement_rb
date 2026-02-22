@@ -1,0 +1,49 @@
+# Generated from lib/jp_address_complement/ken_all_downloader.rb with RBS::Inline
+
+module JpAddressComplement
+  # 郵便番号データ（ken_all.zip）を公式URLからダウンロードし、展開して CSV のパスを返す
+  class KenAllDownloader
+    # @rbs String
+    DEFAULT_URL: ::String
+
+    # @rbs String
+    CSV_FILENAME: ::String
+
+    class DownloadError < JpAddressComplement::Error
+    end
+
+    # @rbs (?String url) -> void
+    # @param url [String] ダウンロードする zip の URL（省略時は DEFAULT_URL）
+    def initialize: (?String url) -> void
+
+    # zip をダウンロードして一時ディレクトリに展開し、KEN_ALL.CSV の絶対パスを返す。
+    # 呼び出し元でインポート完了まで一時ディレクトリは削除されない（プロセス終了時に OS が削除）。
+    # @rbs () -> String
+    # @return [String] 展開された KEN_ALL.CSV の絶対パス
+    # @raise [DownloadError] ダウンロード・展開・ファイルが見つからない場合
+    def download_and_extract: () -> String
+
+    private
+
+    # @rbs () -> String
+    def download_zip: () -> String
+
+    # @rbs (String path) -> void
+    def fetch_to_path: (String path) -> void
+
+    # @rbs (Net::HTTPResponse response, String path) -> void
+    def write_response_to_path: (Net::HTTPResponse response, String path) -> void
+
+    # @rbs (String zip_path) -> String
+    def extract_zip: (String zip_path) -> String
+
+    # @rbs (String zip_path, String tmpdir) -> String?
+    def extract_zip_entries: (String zip_path, String tmpdir) -> String?
+
+    # @rbs (String entry_name, String dest) -> bool
+    def entry_csv?: (String entry_name, String dest) -> bool
+
+    # @rbs (String tmpdir) -> String?
+    def find_csv_in_dir: (String tmpdir) -> String?
+  end
+end

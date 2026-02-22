@@ -86,7 +86,7 @@ module JpAddressComplement
     end
 
     # 都道府県・市区町村・町域から郵便番号候補を取得する（逆引き）
-    # @rbs (String? pref, String? city, String? town) -> Array[String]
+    # @rbs (pref: String?, city: String?, ?town: String?) -> Array[String]
     # @param pref [String] 都道府県名（正式名称）
     # @param city [String] 市区町村名
     # @param town [String, nil] 町域名。省略可

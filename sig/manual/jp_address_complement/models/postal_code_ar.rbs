@@ -1,8 +1,0 @@
-# ActiveRecord のクラスメソッド（where, maximum 等）を型付け
-# Steep が lib のみをチェックするため、rbs-rails の生成結果を使わず手動で必要分のみ宣言
-module JpAddressComplement
-  class PostalCode
-    def self.where: (*untyped) -> untyped
-    def self.maximum: (Symbol column) -> untyped
-  end
-end
