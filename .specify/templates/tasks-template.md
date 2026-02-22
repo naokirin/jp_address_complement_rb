@@ -178,13 +178,11 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests MUST be written and FAIL before implementation (**TDD: Non-Negotiable**)
+- Tests (if included) MUST be written and FAIL before implementation
 - Models before services
-- Services before endpoints/public APIs
+- Services before endpoints
 - Core implementation before integration
 - Story complete before moving to next priority
-- `bundle exec rubocop` MUST pass (no `disable` comments) before each commit
-- SimpleCov coverage MUST be checked and remain >= 90% after each story
 
 ### Parallel Opportunities
 
@@ -247,9 +245,7 @@ With multiple developers:
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
-- **TDD (NON-NEGOTIABLE)**: Verify tests fail before implementing; Red-Green-Refactor cycle required
-- **Rubocop (NON-NEGOTIABLE)**: `bundle exec rubocop` must pass before every commit; `disable` comments are forbidden
-- **Coverage**: SimpleCov coverage must be >= 90% at all times
+- Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

@@ -17,26 +17,21 @@
   the iteration process.
 -->
 
-**Language/Version**: Ruby 3.x（3.2 以上推奨）  
-**Primary Dependencies**: Rails 7.x 以上、RSpec、SimpleCov、RuboCop  
-**Storage**: SQLite（開発・テスト）/ 任意のActiveRecord対応DB（本番）  
-**Testing**: RSpec（カバレッジ 90% 以上、SimpleCov 計測）  
-**Target Platform**: Ruby gem（Rails Engine）  
-**Project Type**: Ruby gem（Rails 組み込み型ライブラリ）  
-**Performance Goals**: 郵便番号→住所検索 < 10ms p95  
-**Constraints**: Rubocop 100% PASS（disable 禁止）、TDD 必須  
-**Scale/Scope**: 全国郵便番号（約12万件）を管理
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- [ ] **I. Gem-First**: 実装は `JpAddresscomplement` 名前空間に閉じているか。Rails 非依存のコアロジックか。
-- [ ] **II. TDD**: テストを先に書き、失敗を確認してから実装しているか。RSpec カバレッジ 90% 以上の計画があるか。
-- [ ] **III. Rubocop**: `rubocop:disable` を使用していないか。CI で Rubocop が必須ゲートとして設定されているか。
-- [ ] **IV. データ整合性**: 日本郵便 CSV の取り込みが冪等か。差分インポート（upsert+バッチ分割）を採用しているか。DB 負荷を最小化する設計になっているか。
-- [ ] **V. 機能要件**: 3つの機能（住所取得・候補取得・不一致検出）のインターフェースが明確か。バリデーションがあるか。
-- [ ] **VI. シンプルさ**: 複雑化は正当化されているか。YAGNI 原則に従っているか。
+[Gates determined based on constitution file]
 
 ## Project Structure
 
