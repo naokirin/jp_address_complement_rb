@@ -1,0 +1,5 @@
+# sqlite database
+storage/*.sqlite3
+
+# log files
+log/*.log
