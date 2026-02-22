@@ -54,9 +54,10 @@ lib/jp_address_complement/
 │   └── csv_importer.rb   # 拡張: 二相インポート・件数集計・空CSV拒否
 ├── models/
 │   └── postal_code.rb    # 既存（変更なし）
-├── tasks/
-│   └── jp_address_complement.rake  # 拡張: 件数報告出力
 └── ...
+
+lib/tasks/
+└── jp_address_complement.rake  # 拡張: 件数報告出力（Rails 慣習）
 
 spec/
 ├── importers/
