@@ -35,16 +35,18 @@ module JpAddressComplement
         @csv_path = csv_path
       end
 
-      # CSV を読み込み、upsert 後に今回のCSVにない行を削除する。戻り値は ImportResult。
+      # CSV を読み込み、upsert 後に古いバージョンの行を一括削除する。戻り値は ImportResult。
+      # バージョンは既存レコードの最大値+1 で、別テーブルでは管理しない。
       # @rbs () -> ImportResult
       # @return [ImportResult] upserted 件数と deleted 件数
       def import
         raise ImportError, "CSV ファイルが見つかりません: #{@csv_path}" unless File.exist?(@csv_path)
 
-        total_upserted, keys_in_csv = read_and_upsert
+        import_version = (PostalCode.maximum(:version) || 0) + 1
+        total_upserted, keys_in_csv = read_and_upsert(import_version)
         raise ImportError, '有効行が0件のためインポートを実行しません（空CSVは拒否します）' if keys_in_csv.empty?
 
-        deleted = delete_obsolete(keys_in_csv)
+        deleted = delete_obsolete(import_version)
         ImportResult.new(upserted: total_upserted, deleted: deleted)
       end
 
@@ -75,8 +77,8 @@ module JpAddressComplement
         }
       end
 
-      # @rbs () -> [Integer, Hash]
-      def read_and_upsert
+      # @rbs (Integer import_version) -> [Integer, Hash]
+      def read_and_upsert(import_version)
         keys_in_csv = {}
         total_upserted = 0
         batch = [] #: Array[Hash[Symbol, untyped]]
@@ -85,6 +87,7 @@ module JpAddressComplement
           record = parse_row(row)
           next if record.nil?
 
+          record = record.merge(version: import_version)
           keys_in_csv[row_key(record)] = true
           batch << record
           if batch.size >= BATCH_SIZE
@@ -115,18 +118,10 @@ module JpAddressComplement
         [record[:postal_code].to_s, record[:pref_code].to_s, record[:city].to_s, (record[:town] || '').to_s]
       end
 
-      # キー集合に含まれない行を削除し、削除件数を返す
-      # @rbs (Hash keys_in_csv) -> Integer
-      def delete_obsolete(keys_in_csv)
-        to_delete = []
-        PostalCode.find_each(batch_size: BATCH_SIZE) do |r|
-          key = [r.postal_code.to_s, r.pref_code.to_s, r.city.to_s, (r.town || '').to_s]
-          to_delete << r.id unless keys_in_csv.key?(key)
-        end
-        return 0 if to_delete.empty?
-
-        PostalCode.where(id: to_delete).delete_all
-        to_delete.size
+      # 今回のインポートより古いバージョンの行を一括削除し、削除件数を返す
+      # @rbs (Integer import_version) -> Integer
+      def delete_obsolete(import_version)
+        PostalCode.where(version: ...import_version).delete_all
       end
     end
   end

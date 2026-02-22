@@ -14,6 +14,7 @@ class CreateJpAddressComplementPostalCodes < ActiveRecord::Migration[8.1]
       t.boolean :has_alias,       default: false, null: false
       t.boolean :is_partial,      default: false, null: false
       t.boolean :is_large_office, default: false, null: false
+      t.integer :version, default: 0, null: false
       t.timestamps
     end
 
@@ -24,5 +25,8 @@ class CreateJpAddressComplementPostalCodes < ActiveRecord::Migration[8.1]
               %i[postal_code pref_code city town],
               unique: true,
               name: 'idx_jp_address_complement_unique'
+
+    add_index :jp_address_complement_postal_codes, :version,
+              name: 'idx_jp_address_complement_version'
   end
 end

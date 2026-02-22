@@ -25,7 +25,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_23_000001) do
     t.string "pref_code", limit: 2, null: false
     t.string "town", limit: 100
     t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
     t.index ["postal_code", "pref_code", "city", "town"], name: "idx_jp_address_complement_unique", unique: true
     t.index ["postal_code"], name: "idx_jp_address_complement_postal_code"
+    t.index ["version"], name: "idx_jp_address_complement_version"
   end
 end

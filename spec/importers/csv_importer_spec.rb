@@ -131,5 +131,19 @@ RSpec.describe JpAddressComplement::Importers::CsvImporter, :db do
         expect(result.deleted).to eq(1)
       end
     end
+
+    context 'when バージョン番号付与と古いバージョン一括削除を行う場合' do
+      it 'インポートごとにインクリメンタルなバージョンが付与され、古いバージョンのみ一括削除される' do
+        csv_ab = build_sjis_csv([row_a, row_b])
+        described_class.new(csv_ab.path).import
+        expect(JpAddressComplement::PostalCode.distinct.pluck(:version)).to eq([1])
+
+        csv_bc = build_sjis_csv([row_b, row_c])
+        result = described_class.new(csv_bc.path).import
+        expect(JpAddressComplement::PostalCode.distinct.pluck(:version)).to eq([2])
+        expect(JpAddressComplement::PostalCode.count).to eq(2)
+        expect(result.deleted).to eq(1) # version 1 の A のみ削除（B は version 2 に更新）
+      end
+    end
   end
 end
