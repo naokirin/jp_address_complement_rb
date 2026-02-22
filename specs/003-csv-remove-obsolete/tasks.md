@@ -24,8 +24,8 @@
 
 **Purpose**: 003 着手前の既存テスト・Lint が通る状態を確認する
 
-- [ ] T001 既存の CsvImporter と Rake タスクのテストがパスすることを確認する（spec/importers/csv_importer_spec.rb, spec/tasks/import_task_spec.rb）
-- [ ] T002 ベースラインとして bundle exec rubocop がパスすることを確認する
+- [x] T001 既存の CsvImporter と Rake タスクのテストがパスすることを確認する（spec/importers/csv_importer_spec.rb, spec/tasks/import_task_spec.rb）
+- [x] T002 ベースラインとして bundle exec rubocop がパスすることを確認する
 
 **Checkpoint**: 既存インポート仕様が GREEN の状態
 
@@ -37,7 +37,7 @@
 
 **⚠️ CRITICAL**: この Phase 完了まで User Story 実装に着手しない
 
-- [ ] T003 [P] CsvImporter の import 戻り値用の型（例: Data.define(:upserted, :deleted) または Hash）を lib/jp_address_complement/importers/csv_importer.rb に定義する
+- [x] T003 [P] CsvImporter の import 戻り値用の型（例: Data.define(:upserted, :deleted) または Hash）を lib/jp_address_complement/importers/csv_importer.rb に定義する
 
 **Checkpoint**: 戻り値型が定義済み。US1 実装で import の戻り値をこの型に差し替え可能
 
@@ -51,17 +51,17 @@
 
 ### Tests for User Story 1（先に書き、RED を確認してから実装）
 
-- [ ] T004 [P] [US1] 新CSVに含まれないレコードが削除されることを spec/importers/csv_importer_spec.rb で検証する（Given 3件存在, When B を除くCSVでインポート, Then A,C のみ残る）
-- [ ] T005 [P] [US1] 空CSV（有効行0件）で ImportError が発生し既存データが変更されないことを spec/importers/csv_importer_spec.rb で検証する
-- [ ] T006 [P] [US1] 同じCSVで再インポートしても冪等であることを spec/importers/csv_importer_spec.rb で検証する
-- [ ] T007 [P] [US1] upsert 途中で失敗した場合は削除フェーズを実行せず既存データが維持されることを spec/importers/csv_importer_spec.rb で検証する（モックまたはスタブで失敗を再現）
+- [x] T004 [P] [US1] 新CSVに含まれないレコードが削除されることを spec/importers/csv_importer_spec.rb で検証する（Given 3件存在, When B を除くCSVでインポート, Then A,C のみ残る）
+- [x] T005 [P] [US1] 空CSV（有効行0件）で ImportError が発生し既存データが変更されないことを spec/importers/csv_importer_spec.rb で検証する
+- [x] T006 [P] [US1] 同じCSVで再インポートしても冪等であることを spec/importers/csv_importer_spec.rb で検証する
+- [x] T007 [P] [US1] upsert 途中で失敗した場合は削除フェーズを実行せず既存データが維持されることを spec/importers/csv_importer_spec.rb で検証する（モックまたはスタブで失敗を再現）
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] CSV 走査中に出現した一意キー (postal_code, pref_code, city, town) を Set で保持する処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
-- [ ] T009 [US1] 有効行が1件もない場合に空CSVと判定し JpAddressComplement::ImportError を発生させる処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
-- [ ] T010 [US1] upsert が全て成功した後に、キー集合に含まれない行を jp_address_complement_postal_codes から削除する処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
-- [ ] T011 [US1] import の戻り値を Phase 2 で定義した型（upserted 件数・deleted 件数）に変更する処理を lib/jp_address_complement/importers/csv_importer.rb に実装する
+- [x] T008 [US1] CSV 走査中に出現した一意キー (postal_code, pref_code, city, town) を Set で保持する処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
+- [x] T009 [US1] 有効行が1件もない場合に空CSVと判定し JpAddressComplement::ImportError を発生させる処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
+- [x] T010 [US1] upsert が全て成功した後に、キー集合に含まれない行を jp_address_complement_postal_codes から削除する処理を lib/jp_address_complement/importers/csv_importer.rb に追加する
+- [x] T011 [US1] import の戻り値を Phase 2 で定義した型（upserted 件数・deleted 件数）に変更する処理を lib/jp_address_complement/importers/csv_importer.rb に実装する
 
 **Checkpoint**: User Story 1 が単体で動作し、削除・空CSV拒否・冪等・失敗時不削除がテストで確認できる状態
 
@@ -75,12 +75,12 @@
 
 ### Tests for User Story 2
 
-- [ ] T012 [P] [US2] 同一インポートで削除・追加・更新が正しく反映される統合テストを spec/importers/csv_importer_spec.rb に追加する（例: A 削除・C 追加 → B,C のみ残る）
-- [ ] T013 [P] [US2] Rake タスク実行時に標準出力に upserted/deleted 件数が含まれることを spec/tasks/import_task_spec.rb で検証する
+- [x] T012 [P] [US2] 同一インポートで削除・追加・更新が正しく反映される統合テストを spec/importers/csv_importer_spec.rb に追加する（例: A 削除・C 追加 → B,C のみ残る）
+- [x] T013 [P] [US2] Rake タスク実行時に標準出力に upserted/deleted 件数が含まれることを spec/tasks/import_task_spec.rb で検証する
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] jp_address_complement:import タスクで CsvImporter#import の戻り値を受け取り、標準出力に「インポート完了: upsert N 件, 削除 M 件」を表示する処理を lib/tasks/jp_address_complement.rake に追加する
+- [x] T014 [US2] jp_address_complement:import タスクで CsvImporter#import の戻り値を受け取り、標準出力に「インポート完了: upsert N 件, 削除 M 件」を表示する処理を lib/tasks/jp_address_complement.rake に追加する
 
 **Checkpoint**: User Story 1 と 2 がともに動作し、Rake から件数が確認できる状態
 
@@ -90,10 +90,10 @@
 
 **Purpose**: 品質ゲートとドキュメントの最終確認
 
-- [ ] T015 [P] 全テストが GREEN であることと bundle exec rubocop がパスすることを確認する
-- [ ] T016 [P] SimpleCov でカバレッジ 90% 以上を確認する
-- [ ] T017 公開 API 変更（CsvImporter#import の戻り値が Integer → 件数オブジェクト）に合わせて CHANGELOG を更新する（Constitution Quality Gates 準拠）
-- [ ] T018 quickstart.md の手順（インポートで消えたレコード削除・空CSV拒否・件数表示）を手動で確認し、必要なら docs を更新する
+- [x] T015 [P] 全テストが GREEN であることと bundle exec rubocop がパスすることを確認する
+- [x] T016 [P] SimpleCov でカバレッジ 90% 以上を確認する
+- [x] T017 公開 API 変更（CsvImporter#import の戻り値が Integer → 件数オブジェクト）に合わせて CHANGELOG を更新する（Constitution Quality Gates 準拠）
+- [x] T018 quickstart.md の手順（インポートで消えたレコード削除・空CSV拒否・件数表示）を手動で確認し、必要なら docs を更新する
 
 ---
 

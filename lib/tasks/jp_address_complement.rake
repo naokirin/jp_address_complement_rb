@@ -27,7 +27,7 @@ namespace :jp_address_complement do
     end
 
     puts "インポート開始: #{csv_path}"
-    count = JpAddressComplement::Importers::CsvImporter.new(csv_path).import
-    puts "インポート完了: #{count} 件"
+    result = JpAddressComplement::Importers::CsvImporter.new(csv_path).import
+    puts "インポート完了: upsert #{result.upserted} 件, 削除 #{result.deleted} 件"
   end
 end
