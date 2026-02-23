@@ -49,7 +49,9 @@ module JpAddressComplement
     end
 
     # @rbs (String) -> void
-    delegate :postal_code_table_name=, to: :configuration
+    def postal_code_table_name=(name)
+      configuration.postal_code_table_name = name
+    end
 
     # 設定をリセットする（主にテスト用）
     # @rbs () -> void

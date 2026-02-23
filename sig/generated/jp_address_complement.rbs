@@ -24,9 +24,11 @@ module JpAddressComplement
   # @rbs (Class) -> void
   def self.base_record_class=: (Class) -> void
 
-  # PostalCode が参照するテーブル名。未設定時は 'jp_address_complement_postal_codes'。
+  # PostalCode が参照するテーブル名。未設定時は 'jp_address_complement_postal_codes'。configuration.postal_code_table_name に委譲。
+  # @rbs () -> String
   def self.postal_code_table_name: () -> String
 
+  # @rbs (String) -> void
   def self.postal_code_table_name=: (String) -> void
 
   # 設定をリセットする（主にテスト用）

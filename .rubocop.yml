@@ -1,7 +1,6 @@
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
-  - rubocop-rails
   - rubocop-rspec
 
 AllCops:
@@ -94,13 +93,6 @@ Style/Documentation:
     - "lib/jp_address_complement.rb"
     - "spec/**/*"
 
-# find_by_code / find_by_prefix は ActiveRecord 動的ファインダーではなく独自のリポジトリメソッドのため除外
-# （rubocop-rails が誤検知するため）
-Rails/DynamicFindBy:
-  AllowedMethods:
-    - find_by_code
-    - find_by_prefix
-
 # rbs-inline の #: Type 注釈は # の直後に : が来るため LeadingCommentSpace と競合（FR-010, T008）
 Layout/LeadingCommentSpace:
   Exclude:
@@ -114,17 +106,6 @@ Layout/EmptyLineAfterMagicComment:
   Exclude:
     - "lib/jp_address_complement/address_record.rb"
 
-# rbs:generate / steep は Rails 不要のため :environment 依存にしない（Rails/RakeEnvironment 除外理由）
-Rails/RakeEnvironment:
-  Exclude:
-    - "lib/tasks/jp_address_complement.rake"
-
-# Gem の PostalCode モデルは ApplicationRecord を使わず ActiveRecord::Base を直接継承する
-# （Gem が Rails に依存しない設計のため）
-Rails/ApplicationRecord:
-  Exclude:
-    - "lib/jp_address_complement/models/postal_code.rb"
-
 # CsvImporter の parse_row は列数が多い CSV のパースのためやむを得ず複雑になる
 Metrics/AbcSize:
   Exclude:
@@ -135,11 +116,5 @@ Metrics/CyclomaticComplexity:
     - "lib/jp_address_complement/importers/csv_importer.rb"
 
 Metrics/PerceivedComplexity:
-  Exclude:
-    - "lib/jp_address_complement/importers/csv_importer.rb"
-
-# upsert_all はインポートのパフォーマンス要件（60秒・120k件）のため意図的に使用
-# validates は CSV インポート前に parse_row でチェック済み
-Rails/SkipsModelValidations:
   Exclude:
     - "lib/jp_address_complement/importers/csv_importer.rb"
