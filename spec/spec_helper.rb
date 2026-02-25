@@ -6,8 +6,8 @@ SimpleCov.start do
   add_filter '/spec/'
   add_filter '/bin/'
   add_filter '/sig/'
-  minimum_coverage 90
   enable_coverage :branch
+  minimum_coverage line: 90, branch: 90
 end
 
 require 'jp_address_complement'

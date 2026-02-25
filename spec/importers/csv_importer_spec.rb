@@ -145,5 +145,49 @@ RSpec.describe JpAddressComplement::Importers::CsvImporter, :db do
         expect(result.deleted).to eq(1) # version 1 の A のみ削除（B は version 2 に更新）
       end
     end
+
+    # branch coverage: parse_row で必須列が nil の行・郵便番号形式不正の行はスキップされ、オプション列が nil の行は取り込まれる
+    context 'when 無効行と有効行が混在する CSV の場合' do
+      it '必須列不足行と郵便番号形式不正行はスキップし、有効行のみインポートする' do
+        # 7列のみの行（city が nil）→ parse_row が nil
+        short_row = %w[13101 100 1000001 トウキョウト チヨダク チヨダ 東京都]
+        # 郵便番号が7桁でない行 → parse_row が nil
+        invalid_postal_row = %w[13101 100 12345 トウキョウト チヨダク チヨダ 東京都 千代田区 千代田 0 0 0 0 0 0]
+        # 9列のみ（オプション列が nil になる行）→ 有効
+        row_9_cols = %w[13101 100 1000004 トウキョウト チヨダク ヒトツブ 東京都 千代田区 一ツ橋]
+        csv = build_sjis_csv([short_row, invalid_postal_row, row_9_cols])
+        described_class.new(csv.path).import
+        expect(JpAddressComplement::PostalCode.count).to eq(1)
+        expect(JpAddressComplement::PostalCode.first.postal_code).to eq('1000004')
+      end
+    end
+
+    # branch coverage: parse_row で row[COL_TOWN] 等が nil になる行（8列のみ）の &._ else ブランチ
+    context 'when 8列のみの有効行（町域以降が nil）を含む CSV の場合' do
+      it '町域等が nil として取り込まれる' do
+        # 8列: 団体コード,旧郵便,郵便番号,都道府県カナ,市区町村カナ,町域カナ,都道府県,市区町村 → row[8]=nil
+        row_8_cols = %w[13101 100 1000005 トウキョウト チヨダク チヨダ 東京都 千代田区]
+        csv = build_sjis_csv([row_8_cols])
+        described_class.new(csv.path).import
+        expect(JpAddressComplement::PostalCode.count).to eq(1)
+        rec = JpAddressComplement::PostalCode.first
+        expect(rec.postal_code).to eq('1000005')
+        expect(rec.town).to be_nil
+      end
+    end
+
+    # branch coverage: parse_row で各列が nil の行（row[i]&.strip の else）を通すため、長さ0〜2の行を混在させる
+    context 'when 列数が不足した無効行が含まれる場合' do
+      it '必須列不足行はスキップし有効行のみインポートする' do
+        row_0_cols = []                                                    # row[0]〜nil
+        row_1_col = %w[13101]                                              # row[1]〜nil
+        row_2_cols = %w[13101 100]                                         # row[2]〜nil
+        valid_row = %w[13101 100 1000006 トウキョウト チヨダク サンシ 東京都 千代田区 三崎町 0 0 0 0 0 0]
+        csv = build_sjis_csv([row_0_cols, row_1_col, row_2_cols, valid_row])
+        described_class.new(csv.path).import
+        expect(JpAddressComplement::PostalCode.count).to eq(1)
+        expect(JpAddressComplement::PostalCode.first.postal_code).to eq('1000006')
+      end
+    end
   end
 end

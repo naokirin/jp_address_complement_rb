@@ -123,6 +123,13 @@ RSpec.describe JpAddressComplement::Searcher do
         expect(searcher.search_by_postal_code_prefix(nil)).to eq([])
       end
     end
+
+    context 'when 空文字や正規化で nil になる場合' do
+      it '空配列を返す' do
+        expect(searcher.search_by_postal_code_prefix('')).to eq([])
+        expect(searcher.search_by_postal_code_prefix('   ')).to eq([])
+      end
+    end
   end
 
   describe '#valid_combination?', :us3 do
@@ -153,6 +160,14 @@ RSpec.describe JpAddressComplement::Searcher do
     context 'when nil の場合' do
       it 'false を返す' do
         expect(searcher.valid_combination?(nil, '東京都千代田区千代田')).to be false
+      end
+    end
+
+    # branch coverage: normalized.nil? が true のとき（郵便番号が不正形式）
+    context 'when 郵便番号が正規化で nil になる場合' do
+      it 'false を返す' do
+        expect(searcher.valid_combination?('12', '東京都千代田区')).to be false
+        expect(searcher.valid_combination?('ab-cdefg', '東京都千代田区')).to be false
       end
     end
 

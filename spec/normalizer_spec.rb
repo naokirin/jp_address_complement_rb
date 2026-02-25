@@ -121,5 +121,31 @@ RSpec.describe JpAddressComplement::Normalizer do
         expect(result).to be_nil
       end
     end
+
+    # branch coverage: normalize_prefix で normalized.empty? が true になるケース
+    context 'when 〒やハイフン・空白のみで正規化後に空になる場合' do
+      let(:input) { '〒　－ー' }
+
+      it 'nil を返す' do
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when 〒のみで正規化後に空になる場合' do
+      let(:input) { '〒' }
+
+      it 'nil を返す' do
+        expect(result).to be_nil
+      end
+    end
+
+    # branch coverage: normalize_prefix で数字以外が含まれるケース
+    context 'when 数字以外の文字を含む場合' do
+      let(:input) { '100a' }
+
+      it 'nil を返す' do
+        expect(result).to be_nil
+      end
+    end
   end
 end

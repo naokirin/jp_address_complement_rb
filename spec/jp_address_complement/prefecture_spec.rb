@@ -40,6 +40,13 @@ RSpec.describe JpAddressComplement::Prefecture do
       end
     end
 
+    # branch coverage: normalize_code の case で Integer/String 以外（else）を通るケース
+    context 'when Integer でも String でもない型を渡した場合' do
+      it 'nil を返す' do
+        expect(described_class.name_from_code(13.0)).to be_nil
+      end
+    end
+
     context 'when 47都道府県すべてのコード⇔名称' do
       it '代表例で正しく動作する' do
         expect(described_class.name_from_code('01')).to eq('北海道')

@@ -130,6 +130,49 @@ RSpec.describe JpAddressComplement::KenAllDownloader do
         )
       end
     end
+
+    # branch coverage: fetch_to_path で明示的 port を使う URL（uri.port が truthy）
+    context 'when URL に明示的な port が含まれる場合' do
+      it 'その port で Net::HTTP.start が呼ばれる' do
+        zip_content = build_zip_with_csv("col1,col2\n")
+        # rubocop:disable RSpec/VerifiedDoubles
+        response = double('HTTPResponse', body: zip_content, code: '200', message: 'OK')
+        # rubocop:enable RSpec/VerifiedDoubles
+        allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+
+        http = instance_double(Net::HTTP)
+        allow(http).to receive(:request) do |_req, &block|
+          block.call(response)
+        end
+        allow(Net::HTTP).to receive(:start).with('example.com', 8443, hash_including(use_ssl: true)).and_yield(http)
+
+        downloader = described_class.new('https://example.com:8443/ken_all.zip')
+        csv_path = downloader.download_and_extract
+        expect(File.exist?(csv_path)).to be true
+        expect(File.read(csv_path)).to eq("col1,col2\n")
+      end
+    end
+
+    # branch coverage: fetch_to_path で http スキーム（port 80）
+    context 'when http スキームの URL の場合' do
+      it 'port 80 で接続してダウンロードできる' do
+        zip_content = build_zip_with_csv("col1\n")
+        # rubocop:disable RSpec/VerifiedDoubles
+        response = double('HTTPResponse', body: zip_content, code: '200', message: 'OK')
+        # rubocop:enable RSpec/VerifiedDoubles
+        allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+
+        http = instance_double(Net::HTTP)
+        allow(http).to receive(:request) do |_req, &block|
+          block.call(response)
+        end
+        allow(Net::HTTP).to receive(:start).with('example.com', 80, hash_including(use_ssl: false)).and_yield(http)
+
+        downloader = described_class.new('http://example.com/ken_all.zip')
+        csv_path = downloader.download_and_extract
+        expect(File.exist?(csv_path)).to be true
+      end
+    end
   end
 
   describe '#initialize' do
