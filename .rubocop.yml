@@ -1,6 +1,4 @@
 plugins:
-  - rubocop-capybara
-  - rubocop-factory_bot
   - rubocop-rspec
 
 AllCops:

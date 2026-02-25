@@ -42,6 +42,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rbs_rails', '~> 0.13'
   spec.add_development_dependency 'rspec', '~> 3.13'
   spec.add_development_dependency 'rubocop', '~> 1.60'
+  spec.add_development_dependency 'rubocop-rspec', '~> 3.0'
   spec.add_development_dependency 'simplecov', '~> 0.22'
   spec.add_development_dependency 'sqlite3', '>= 2.0'
   spec.add_development_dependency 'steep', '~> 1.10'
