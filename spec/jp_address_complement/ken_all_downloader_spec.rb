@@ -29,7 +29,6 @@ RSpec.describe JpAddressComplement::KenAllDownloader do
   describe '#download_and_extract' do
     context 'when HTTP が成功し zip 内に KEN_ALL.CSV がある場合' do
       it '展開した CSV の絶対パスを返す' do
-        skip 'RubyZip extract が環境により ENOENT になるため、extract_zip は import_task_spec のスタブ経由で間接検証'
         zip_path_on_disk = create_zip_file_on_disk(
           JpAddressComplement::KenAllDownloader::CSV_FILENAME,
           "col1,col2\n"
@@ -96,7 +95,6 @@ RSpec.describe JpAddressComplement::KenAllDownloader do
 
     context 'when zip 内に KEN_ALL.CSV が含まれない場合' do
       it 'DownloadError を発生させる' do
-        skip 'RubyZip extract が環境により ENOENT になるため'
         zip_path_on_disk = create_zip_file_on_disk('OTHER.TXT', 'dummy')
         downloader = described_class.new('https://example.com/ken_all.zip')
         allow(downloader).to receive(:download_zip).and_return(zip_path_on_disk)
