@@ -13,6 +13,9 @@
 - **RDB のリレーションを活用できる**  
   郵便番号テーブルを自前で持つため、都道府県コードや市区町村名で他のテーブルと JOIN したり、アプリ固有のマスタと組み合わせたりしやすい設計です。
 
+- **CSV を直接利用する方式も選べる**  
+  データベースを使わず、ローカルに配置した KEN_ALL.CSV をそのまま読み込んで検索する `CsvPostalCodeRepository` も利用できます。CSV のパスは設定で指定できます。
+
 ### 主な機能
 
 - **郵便番号から住所を検索**（7桁完全一致・先頭4桁以上のプレフィックス検索）
@@ -174,6 +177,28 @@ JpAddressComplement.configure do |config|
   config.postal_code_table_name = 'my_postal_codes'
 end
 ```
+
+### CSV をローカルに配置して利用する（DB を使わない場合）
+
+RDB やマイグレーションを使わず、KEN_ALL 形式の CSV をローカルに置いたまま検索だけ行いたい場合は、`CsvPostalCodeRepository` を使います。CSV のパスは任意に指定できます。
+
+```ruby
+require 'jp_address_complement'
+require 'jp_address_complement/repositories/csv_postal_code_repository'
+
+# CSV ファイルのパスを設定して Repository を差し替える
+JpAddressComplement.configure do |config|
+  config.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new(
+    '/path/to/KEN_ALL.CSV'   # 任意のパスを指定可能
+  )
+end
+
+# 以降は search_by_postal_code など、既存の API をそのまま利用できる
+records = JpAddressComplement.search_by_postal_code('1000001')
+```
+
+- 初回の検索時に CSV を読み込み、メモリ上にインデックスを構築します（2回目以降はメモリ検索のみ）。
+- CSV は日本郵便の KEN_ALL.CSV と同じ列構成（Shift_JIS / Windows-31J）を前提としています。
 
 ---
 
