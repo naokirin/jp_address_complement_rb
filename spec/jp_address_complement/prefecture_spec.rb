@@ -40,6 +40,22 @@ RSpec.describe JpAddressComplement::Prefecture do
       end
     end
 
+    # branch coverage: normalize_code_string で空でないが数字1-2桁以外の文字列
+    context 'when 数字1-2桁以外の文字列の場合' do
+      it 'nil を返す' do
+        expect(described_class.name_from_code('abc')).to be_nil
+        expect(described_class.name_from_code('1a')).to be_nil
+      end
+    end
+
+    # branch coverage: normalize_code_string で 00 など範囲外のコード
+    context 'when 00 や 48 など範囲外の文字列の場合' do
+      it 'nil を返す' do
+        expect(described_class.name_from_code('00')).to be_nil
+        expect(described_class.name_from_code('48')).to be_nil
+      end
+    end
+
     # branch coverage: normalize_code の case で Integer/String 以外（else）を通るケース
     context 'when Integer でも String でもない型を渡した場合' do
       it 'nil を返す' do

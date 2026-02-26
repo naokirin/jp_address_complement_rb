@@ -2,6 +2,9 @@
 
 require 'spec_helper'
 
+# repository 未設定時のテストで DB を使うため
+require 'jp_address_complement/models/postal_code'
+
 RSpec.describe JpAddressComplement do
   before { described_class.reset_configuration! }
 
@@ -12,6 +15,26 @@ RSpec.describe JpAddressComplement do
       fake_repo = JpAddressComplement::FakePostalCodeRepository.new
       described_class.configure { |c| c.repository = fake_repo }
       expect(described_class.repository).to eq(fake_repo)
+    end
+  end
+
+  # branch coverage: repository 未設定時に default_repository が使われるパス
+  describe 'repository 未設定時', :db do
+    before do
+      described_class.reset_configuration!
+      # repository を注入せず、デフォルトの ActiveRecord 実装が使われるようにする
+    end
+
+    it 'search_by_postal_code で DB のレコードを検索できる' do
+      JpAddressComplement::PostalCode.create!(
+        postal_code: '1000001', pref_code: '13', pref: '東京都',
+        city: '千代田区', town: '千代田', kana_pref: nil, kana_city: nil, kana_town: nil,
+        has_alias: false, is_partial: false, is_large_office: false
+      )
+      results = described_class.search_by_postal_code('1000001')
+      expect(results).to be_an(Array)
+      expect(results.size).to eq(1)
+      expect(results.first.postal_code).to eq('1000001')
     end
   end
 
@@ -90,6 +113,19 @@ RSpec.describe JpAddressComplement do
 
     it '不整合の場合は false を返す' do
       expect(described_class.valid_combination?('1000001', '大阪府大阪市北区')).to be false
+    end
+
+    it '郵便番号または住所が nil の場合は false を返す' do
+      expect(described_class.valid_combination?(nil, '東京都千代田区')).to be false
+      expect(described_class.valid_combination?('1000001', nil)).to be false
+    end
+
+    it '不正な郵便番号の場合は false を返す' do
+      expect(described_class.valid_combination?('abc', '東京都千代田区')).to be false
+    end
+
+    it '存在しない郵便番号の場合は false を返す' do
+      expect(described_class.valid_combination?('9999999', '東京都千代田区')).to be false
     end
   end
 
