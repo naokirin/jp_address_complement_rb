@@ -107,10 +107,21 @@ module JpAddressComplement
 
       # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def upsert_batch(batch)
-        PostalCode.upsert_all(
-          batch,
-          on_duplicate: :update
-        )
+        PostalCode.transaction do
+          batch.each do |record|
+            PostalCode.where(
+              postal_code: record[:postal_code],
+              pref_code: record[:pref_code],
+              city: record[:city],
+              town: record[:town]
+            ).delete_all
+          end
+
+          PostalCode.upsert_all(
+            batch,
+            on_duplicate: :update
+          )
+        end
       end
 
       # @rbs (Hash[Symbol, untyped] record) -> Array[String]

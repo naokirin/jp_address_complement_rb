@@ -6,6 +6,8 @@ SimpleCov.start do
   add_filter '/spec/'
   add_filter '/bin/'
   add_filter '/sig/'
+  add_filter %r{/lib/jp_address_complement/(railtie|version).rb}
+  track_files 'lib/**/*.rb'
   enable_coverage :branch
   minimum_coverage line: 90, branch: 85
 end
