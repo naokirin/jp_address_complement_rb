@@ -117,10 +117,7 @@ module JpAddressComplement
             ).delete_all
           end
 
-          PostalCode.upsert_all(
-            batch,
-            on_duplicate: :update
-          )
+          PostalCode.upsert_all(batch)
         end
       end
 
