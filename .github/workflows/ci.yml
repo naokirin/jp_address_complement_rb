@@ -11,9 +11,37 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: jp_address_complement_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: jp_address_complement_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     strategy:
       matrix:
         ruby: ['3.2', '3.3']
+        db: [sqlite, mysql, postgres]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
 
@@ -26,16 +54,68 @@ jobs:
       - name: Install RBS collection
         run: bundle exec rbs collection install
 
-      - name: Run tests
+      - name: Wait for MySQL
+        if: matrix.db == 'mysql'
+        run: |
+          for i in `seq 1 30`; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
+              echo "MySQL is up"
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Wait for PostgreSQL
+        if: matrix.db == 'postgres'
+        run: |
+          for i in `seq 1 30`; do
+            if pg_isready -h 127.0.0.1 -p 5432 -U postgres; then
+              echo "PostgreSQL is up"
+              exit 0
+            fi
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time"
+          exit 1
+
+      - name: Run tests (SQLite)
+        if: matrix.db == 'sqlite'
+        run: bundle exec rspec
+
+      - name: Run tests (MySQL)
+        if: matrix.db == 'mysql'
+        env:
+          DB_ADAPTER: mysql2
+          DB_DATABASE: jp_address_complement_test
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: bundle exec rspec
+
+      - name: Run tests (PostgreSQL)
+        if: matrix.db == 'postgres'
+        env:
+          DB_ADAPTER: postgresql
+          DB_DATABASE: jp_address_complement_test
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
         run: bundle exec rspec
 
       - name: Run RuboCop
+        if: matrix.db == 'sqlite'
         run: bundle exec rubocop lib/ Steepfile
 
       - name: Type check (Steep)
+        if: matrix.db == 'sqlite'
         run: bundle exec rake steep
 
       - name: Verify sig/generated (rbs-inline の生成結果に差分がないこと)
+        if: matrix.db == 'sqlite'
         run: |
           bundle exec rake rbs:generate
           git diff --exit-code sig/generated || (echo "::error::sig/generated に差分があります。bundle exec rake rbs:generate を実行して変更をコミットしてください。" && exit 1)

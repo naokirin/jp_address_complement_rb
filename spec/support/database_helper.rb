@@ -5,11 +5,39 @@ require 'sqlite3'
 
 module DatabaseHelper
   def self.setup
-    ActiveRecord::Base.establish_connection(
-      adapter: 'sqlite3',
-      database: ':memory:'
-    )
+    ActiveRecord::Base.establish_connection(connection_config)
     create_table
+  end
+
+  def self.connection_config
+    adapter = ENV.fetch('DB_ADAPTER', 'sqlite3')
+
+    if adapter == 'sqlite3'
+      sqlite_config
+    else
+      relational_config(adapter)
+    end
+  end
+
+  def self.sqlite_config
+    {
+      adapter: 'sqlite3',
+      database: ENV.fetch('DB_DATABASE', ':memory:')
+    }
+  end
+
+  def self.relational_config(adapter)
+    config = {
+      adapter: adapter,
+      database: ENV.fetch('DB_DATABASE', 'jp_address_complement_test'),
+      host: ENV.fetch('DB_HOST', '127.0.0.1')
+    }
+
+    config[:port] = ENV['DB_PORT'] if ENV['DB_PORT']
+    config[:username] = ENV['DB_USERNAME'] if ENV['DB_USERNAME']
+    config[:password] = ENV['DB_PASSWORD'] if ENV['DB_PASSWORD']
+
+    config
   end
 
   def self.create_table

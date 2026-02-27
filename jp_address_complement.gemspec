@@ -37,6 +37,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rubyzip', '>= 2.3'
 
   spec.add_development_dependency 'generator_spec', '~> 0.10'
+  spec.add_development_dependency 'mysql2'
+  spec.add_development_dependency 'pg'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rbs-inline', '~> 0.13'
   spec.add_development_dependency 'rbs_rails', '~> 0.13'
