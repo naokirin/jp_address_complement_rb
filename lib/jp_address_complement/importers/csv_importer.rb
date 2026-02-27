@@ -109,7 +109,7 @@ module JpAddressComplement
       def upsert_batch(batch)
         PostalCode.upsert_all(
           batch,
-          unique_by: %i[postal_code pref_code city town]
+          on_duplicate: :update
         )
       end
 
