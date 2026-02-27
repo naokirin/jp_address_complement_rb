@@ -1,7 +1,7 @@
 # Generated from lib/jp_address_complement/ken_all_downloader.rb with RBS::Inline
 
 module JpAddressComplement
-  # 郵便番号データ（ken_all.zip）を公式URLからダウンロードし、展開して CSV のパスを返す
+  # 郵便番号データ（utf_ken_all.zip）を公式URLからダウンロードし、展開して CSV のパスを返す
   class KenAllDownloader
     # @rbs String
     DEFAULT_URL: ::String

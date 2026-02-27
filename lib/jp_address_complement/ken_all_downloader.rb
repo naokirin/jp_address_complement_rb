@@ -9,12 +9,12 @@ require 'uri'
 require 'zip'
 
 module JpAddressComplement
-  # 郵便番号データ（ken_all.zip）を公式URLからダウンロードし、展開して CSV のパスを返す
+  # 郵便番号データ（utf_ken_all.zip）を公式URLからダウンロードし、展開して CSV のパスを返す
   class KenAllDownloader
     # @rbs String
-    DEFAULT_URL = 'https://www.post.japanpost.jp/zipcode/dl/oogaki/zip/ken_all.zip'
+    DEFAULT_URL = 'https://www.post.japanpost.jp/zipcode/dl/utf/zip/utf_ken_all.zip'
     # @rbs String
-    CSV_FILENAME = 'KEN_ALL.CSV'
+    CSV_FILENAME = 'utf_ken_all.csv'
 
     class DownloadError < JpAddressComplement::Error; end
 

@@ -1,6 +1,6 @@
 # JpAddressComplement
 
-日本郵便の郵便番号データ（KEN_ALL.CSV）を用いて、Rails アプリで住所の補完・検索・検証を行うための gem です。
+日本郵便の郵便番号データ（KEN_ALL 形式、UTF-8 版 utf_ken_all.csv）を用いて、Rails アプリで住所の補完・検索・検証を行うための gem です。
 
 ## 特徴
 
@@ -14,7 +14,7 @@
   郵便番号テーブルを自前で持つため、都道府県コードや市区町村名で他のテーブルと JOIN したり、アプリ固有のマスタと組み合わせたりしやすい設計です。
 
 - **CSV を直接利用する方式も選べる**  
-  データベースを使わず、ローカルに配置した KEN_ALL.CSV をそのまま読み込んで検索する `CsvPostalCodeRepository` も利用できます。CSV のパスは設定で指定できます。
+  データベースを使わず、ローカルに配置した KEN_ALL 形式の UTF-8 CSV（`utf_ken_all.csv`）をそのまま読み込んで検索する `CsvPostalCodeRepository` も利用できます。CSV のパスは設定で指定できます。
 
 ### 主な機能
 
@@ -56,20 +56,20 @@ rails db:migrate
 
 ### 3. 住所データのインポート
 
-日本郵便の KEN_ALL.CSV をインポートする必要があります。
+日本郵便の KEN_ALL 形式 CSV（UTF-8 版 `utf_ken_all.csv`）をインポートする必要があります。
 
-**方法A: 公式サイトから自動ダウンロードしてインポート**
+**方法A: 公式サイトから UTF-8 版を自動ダウンロードしてインポート**
 
 ```bash
 DOWNLOAD=1 rake jp_address_complement:import
 ```
 
-**方法B: 手元の CSV ファイルを指定してインポート**
+**方法B: 手元の UTF-8 CSV ファイルを指定してインポート**
 
-[郵便番号データダウンロード](https://www.post.japanpost.jp/zipcode/download.html) から KEN_ALL.zip を取得し、展開した `KEN_ALL.CSV` のパスを指定します。
+[郵便番号データダウンロード](https://www.post.japanpost.jp/zipcode/dl/utf-zip.html) から UTF-8 版の `utf_ken_all.zip` を取得し、展開した `utf_ken_all.csv` のパスを指定します。
 
 ```bash
-CSV=/path/to/KEN_ALL.CSV rake jp_address_complement:import
+CSV=/path/to/utf_ken_all.csv rake jp_address_complement:import
 ```
 
 インポートには数分かかる場合があります。完了後、`jp_address_complement_postal_codes` テーブルにデータが入っている状態になります。
@@ -180,7 +180,7 @@ end
 
 ### CSV をローカルに配置して利用する（DB を使わない場合）
 
-RDB やマイグレーションを使わず、KEN_ALL 形式の CSV をローカルに置いたまま検索だけ行いたい場合は、`CsvPostalCodeRepository` を使います。CSV のパスは任意に指定できます。
+RDB やマイグレーションを使わず、KEN_ALL 形式（UTF-8 版 `utf_ken_all.csv`）の CSV をローカルに置いたまま検索だけ行いたい場合は、`CsvPostalCodeRepository` を使います。CSV のパスは任意に指定できます。
 
 ```ruby
 require 'jp_address_complement'
@@ -189,7 +189,7 @@ require 'jp_address_complement/repositories/csv_postal_code_repository'
 # CSV ファイルのパスを設定して Repository を差し替える
 JpAddressComplement.configure do |config|
   config.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new(
-    '/path/to/KEN_ALL.CSV'   # 任意のパスを指定可能
+    '/path/to/utf_ken_all.csv'   # 任意のパスを指定可能（UTF-8 版）
   )
 end
 
@@ -198,7 +198,7 @@ records = JpAddressComplement.search_by_postal_code('1000001')
 ```
 
 - 初回の検索時に CSV を読み込み、メモリ上にインデックスを構築します（2回目以降はメモリ検索のみ）。
-- CSV は日本郵便の KEN_ALL.CSV と同じ列構成（Shift_JIS / Windows-31J）を前提としています。
+- CSV は日本郵便の KEN_ALL 形式と同じ列構成を前提とし、UTF-8 版 `utf_ken_all.csv` を想定しています。
 
 ---
 

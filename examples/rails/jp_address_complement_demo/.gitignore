@@ -5,7 +5,8 @@ config/master.key
 storage/*.sqlite3*
 
 # log files
-log/*.log
+log/
+!log/.keep
 
 # temporary backup (e.g. moved during git history rewrite)
 .backup/
