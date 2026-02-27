@@ -148,4 +148,42 @@ RSpec.describe JpAddressComplement::Normalizer do
       end
     end
   end
+
+  describe '.normalize_town_for_display' do
+    it '全角括弧（）で囲まれた部分を除いた町域名を返す（漢字）' do
+      expect(described_class.normalize_town_for_display('大通西（１〜１９丁目）')).to eq('大通西')
+      expect(described_class.normalize_town_for_display('常盤（その他）')).to eq('常盤')
+      expect(described_class.normalize_town_for_display('常盤（１〜１３１番地）')).to eq('常盤')
+      expect(described_class.normalize_town_for_display('藤野（４００、４００−２番地）')).to eq('藤野')
+      expect(described_class.normalize_town_for_display('丸の内（１丁目）')).to eq('丸の内')
+    end
+
+    it '全角括弧（）で囲まれた部分を除いた町域名を返す（カナ）' do
+      expect(described_class.normalize_town_for_display('藤野（その他）')).to eq('藤野')
+      expect(described_class.normalize_town_for_display('マルノウチ（１チョウメ）')).to eq('マルノウチ')
+      expect(described_class.normalize_town_for_display('トキワ（ソノタ）')).to eq('トキワ')
+    end
+
+    it '「以下に掲載がない場合」を除去する' do
+      expect(described_class.normalize_town_for_display('以下に掲載がない場合')).to be_nil
+      expect(described_class.normalize_town_for_display('某某町以下に掲載がない場合')).to eq('某某町')
+    end
+
+    it '「イカニケイサイガナイバアイ」を除去する' do
+      expect(described_class.normalize_town_for_display('イカニケイサイガナイバアイ')).to be_nil
+    end
+
+    it '括弧を含まない通常の町域名はそのまま返す' do
+      expect(described_class.normalize_town_for_display('千代田')).to eq('千代田')
+      expect(described_class.normalize_town_for_display('渋谷')).to eq('渋谷')
+    end
+
+    it 'nil のとき nil を返す' do
+      expect(described_class.normalize_town_for_display(nil)).to be_nil
+    end
+
+    it '空文字のとき nil を返す' do
+      expect(described_class.normalize_town_for_display('')).to be_nil
+    end
+  end
 end

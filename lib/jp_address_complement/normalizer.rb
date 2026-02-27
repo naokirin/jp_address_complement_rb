@@ -9,6 +9,12 @@ module JpAddressComplement
     DIGIT_ONLY = /\A\d{7}\z/ #: Regexp
     PREFIX_MIN_LENGTH = 4 #: Integer
 
+    # 町域から除去する「通常住所に含まれない」固定文字列（漢字・かな両方）
+    TOWN_DISPLAY_REMOVAL_STRINGS = [
+      '以下に掲載がない場合',
+      'イカニケイサイガナイバアイ' # 以下に掲載がない場合（カナ）
+    ].freeze
+
     class << self
       # 郵便番号文字列を正規化して7桁の半角数字文字列を返す
       # @rbs (String?) -> String?
@@ -36,6 +42,24 @@ module JpAddressComplement
         return nil if normalized.length < PREFIX_MIN_LENGTH
 
         normalized
+      end
+
+      # 町域文字列から「通常住所に含まれない情報」を除いた表示用文字列を返す
+      # 除去対象: 「以下に掲載がない場合」、全角括弧（）で囲まれた部分全体
+      # @rbs (String?) -> String?
+      # @param town_str [String, nil] 町域（漢字）または町域カナ
+      # @return [String, nil] 除去後の文字列。nil または空になった場合は nil
+      def normalize_town_for_display(town_str)
+        return nil if town_str.nil?
+
+        s = town_str.to_s.strip
+        return nil if s.empty?
+
+        # 全角括弧（）で囲まれた部分をすべて除去
+        s = s.gsub(/（[^）]*）/, '')
+        TOWN_DISPLAY_REMOVAL_STRINGS.each { |rem| s = s.gsub(rem, '') }
+        s = s.strip
+        s.empty? ? nil : s
       end
 
       private

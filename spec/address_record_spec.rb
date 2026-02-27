@@ -67,4 +67,43 @@ RSpec.describe JpAddressComplement::AddressRecord do
       expect(record1).not_to eq(record2)
     end
   end
+
+  describe '#normalized_town' do
+    it '括弧内の丁目・番地・その他等を除いた町域名を返す' do
+      record = described_class.new(**valid_attrs, town: '大通西（１〜１９丁目）', kana_town: 'オオドオリニシ（１〜１９チョウメ）')
+      expect(record.normalized_town).to eq('大通西')
+    end
+
+    it '「以下に掲載がない場合」を含む町域からは除去して返す' do
+      record = described_class.new(**valid_attrs, town: '以下に掲載がない場合', kana_town: 'イカニケイサイガナイバアイ')
+      expect(record.normalized_town).to be_nil
+    end
+
+    it '通常の町域名の場合はそのまま返す' do
+      record = described_class.new(**valid_attrs)
+      expect(record.normalized_town).to eq('千代田')
+    end
+
+    it 'town が nil のときは nil を返す' do
+      record = described_class.new(**valid_attrs, town: nil, kana_town: nil)
+      expect(record.normalized_town).to be_nil
+    end
+  end
+
+  describe '#normalized_kana_town' do
+    it '括弧内のチョウメ・バンチ・ソノタ等を除いた町域カナを返す' do
+      record = described_class.new(**valid_attrs, town: '丸の内（１丁目）', kana_town: 'マルノウチ（１チョウメ）')
+      expect(record.normalized_kana_town).to eq('マルノウチ')
+    end
+
+    it '通常の町域カナの場合はそのまま返す' do
+      record = described_class.new(**valid_attrs)
+      expect(record.normalized_kana_town).to eq('チヨダ')
+    end
+
+    it 'kana_town が nil のときは nil を返す' do
+      record = described_class.new(**valid_attrs, town: nil, kana_town: nil)
+      expect(record.normalized_kana_town).to be_nil
+    end
+  end
 end

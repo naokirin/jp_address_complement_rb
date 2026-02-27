@@ -9,6 +9,9 @@ module JpAddressComplement
 
     PREFIX_MIN_LENGTH: Integer
 
+    # 町域から除去する「通常住所に含まれない」固定文字列（漢字・かな両方）
+    TOWN_DISPLAY_REMOVAL_STRINGS: untyped
+
     # 郵便番号文字列を正規化して7桁の半角数字文字列を返す
     # @rbs (String?) -> String?
     # @param code [String, nil] 郵便番号文字列（ハイフン・全角・〒記号を自動除去）
@@ -20,6 +23,13 @@ module JpAddressComplement
     # @param prefix [String, nil] 郵便番号の先頭部分（4桁以上）
     # @return [String, nil] 正規化後の数字文字列。4桁未満または不正な場合は nil
     def self.normalize_prefix: (String?) -> String?
+
+    # 町域文字列から「通常住所に含まれない情報」を除いた表示用文字列を返す
+    # 除去対象: 「以下に掲載がない場合」、全角括弧（）で囲まれた部分全体
+    # @rbs (String?) -> String?
+    # @param town_str [String, nil] 町域（漢字）または町域カナ
+    # @return [String, nil] 除去後の文字列。nil または空になった場合は nil
+    def self.normalize_town_for_display: (String?) -> String?
 
     # @rbs (String) -> String
     private def self.normalize_string: (String) -> String

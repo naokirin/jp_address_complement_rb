@@ -30,5 +30,11 @@ module JpAddressComplement
       ?is_partial: bool,
       ?is_large_office: bool
     ) -> void
+
+    # 通常住所に含まれない情報を除いた町域名（丁目・番地・その他等の括弧、「以下に掲載がない場合」を除去）
+    def normalized_town: () -> String?
+
+    # 通常住所に含まれない情報を除いた町域カナ
+    def normalized_kana_town: () -> String?
   end
 end

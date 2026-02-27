@@ -18,13 +18,19 @@ module JpAddressComplement
     is_large_office
   ].freeze
 
-  AddressRecord = if RUBY_VERSION >= '3.2'
-                    Data.define(*ADDRESS_RECORD_ATTRIBUTES)
-                  else
-                    Struct.new(*ADDRESS_RECORD_ATTRIBUTES, keyword_init: true) do
-                      def frozen?
-                        true
-                      end
-                    end
-                  end
+  # Ruby 3.2 以降を対象。Data.define で定義する。
+  AddressRecord = Data.define(*ADDRESS_RECORD_ATTRIBUTES)
+
+  # インスタンスメソッドは Steep の型解決のためクラス再オープンで定義（Data.define のブロック内だと self が正しく解釈されない）
+  class AddressRecord
+    # 通常住所に含まれない情報（括弧（）内の部分、「以下に掲載がない場合」等）を除いた町域名
+    def normalized_town
+      Normalizer.normalize_town_for_display(town)
+    end
+
+    # 通常住所に含まれない情報を除いた町域カナ
+    def normalized_kana_town
+      Normalizer.normalize_town_for_display(kana_town)
+    end
+  end
 end
