@@ -31,9 +31,9 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activerecord', '>= 7.1'
+  spec.add_dependency 'activerecord', '>= 7.0'
   spec.add_dependency 'csv', '>= 3.0'
-  spec.add_dependency 'railties', '>= 7.1'
+  spec.add_dependency 'railties', '>= 7.0'
   spec.add_dependency 'rubyzip', '>= 2.3'
 
   spec.add_development_dependency 'generator_spec', '~> 0.10'
