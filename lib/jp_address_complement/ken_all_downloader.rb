@@ -94,14 +94,16 @@ module JpAddressComplement
     def extract_zip_entries(zip_path, tmpdir)
       csv_path = nil
       Zip::File.open(zip_path) do |zip_file|
-        zip_file.each do |entry|
-          name = entry.name.delete_prefix('/')
-          # RubyZip の extract(entry_path, destination_directory: '.') では第1引数は destination_directory に対する相対パスとして扱われる。
-          # 絶対パスを渡すと File.join(dest_dir, entry_path) で CWD が先頭に付き不正なパスになるため、エントリ名と tmpdir を分けて渡す。
-          # RubyZip Entry#extract のキーワード引数シグネチャが RBS と差異あり（上書き許可）
-          entry.extract(name, destination_directory: tmpdir) { true } # steep:ignore
-          dest = File.join(tmpdir, name)
-          csv_path = dest if entry_csv?(name, dest)
+        Dir.chdir(tmpdir) do
+          zip_file.each do |entry|
+            name = entry.name.delete_prefix('/')
+            dir = File.dirname(name)
+            FileUtils.mkdir_p(dir) unless dir == '.'
+            # RubyZip::Entry#extract(dest_path = nil) を使い、既存ファイルがあればブロックで上書き許可する。
+            entry.extract(name) { true } # steep:ignore
+            dest = File.join(tmpdir, name)
+            csv_path = dest if entry_csv?(name, dest)
+          end
         end
       end
       csv_path
