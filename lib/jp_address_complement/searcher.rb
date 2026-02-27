@@ -50,7 +50,7 @@ module JpAddressComplement
       return false if records.empty?
 
       records.any? do |record|
-        full_address = record.pref + record.city + record.town.to_s
+        full_address = record.pref + record.city + record.normalized_town.to_s
         address.include?(full_address)
       end
     end

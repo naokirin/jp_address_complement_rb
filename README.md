@@ -135,6 +135,8 @@ JpAddressComplement.valid_combination?('1000001', '大阪府大阪市北区')
 # => false
 ```
 
+**注意**: 複数の郵便番号で丁目や番地のみ違う町域が存在する場合は、異なる丁目や番地の郵便番号でも正しいと判定される場合があります。
+
 ### モデルでのバリデーション（AddressValidator）
 
 `ActiveModel::Validations` と組み合わせて、郵便番号と住所フィールドの組み合わせを検証できます。
