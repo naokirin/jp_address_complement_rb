@@ -8,18 +8,18 @@ require_relative '../address_record'
 
 module JpAddressComplement
   module Repositories
-    # KEN_ALL 形式の CSV ファイルを直接読み込んで検索を行う Repository 実装
+    # UTF-8 版 KEN_ALL（utf_ken_all.csv）形式の CSV ファイルを直接読み込んで検索を行う Repository 実装
     #
     # - ActiveRecord や DB に依存せず、純粋に CSV から AddressRecord を構築する
     # - 初回アクセス時に CSV 全体を読み込み、インメモリでインデックスを構築する（2回目以降はメモリ検索のみ）
-    # - CSV は日本郵便公式の KEN_ALL.CSV と同じ列構成を前提とする
+    # - CSV は日本郵便公式の KEN_ALL.CSV（UTF-8 版 utf_ken_all.csv）と同じ列構成を前提とする
     #
     # 典型的な利用例:
     #
     #   require 'jp_address_complement/repositories/csv_postal_code_repository'
     #
     #   JpAddressComplement.configure do |c|
-    #     c.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new('/path/to/KEN_ALL.CSV')
+    #     c.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new('/path/to/utf_ken_all.csv')
     #   end
     #
     class CsvPostalCodeRepository < PostalCodeRepository
@@ -37,7 +37,7 @@ module JpAddressComplement
       COL_IS_LARGE_OFFICE = 13 # : Integer
 
       # @rbs (String csv_path) -> void
-      # @param csv_path [String] 読み込む KEN_ALL 形式 CSV のパス
+      # @param csv_path [String] 読み込む KEN_ALL 形式 UTF-8 CSV のパス
       def initialize(csv_path)
         super()
         @csv_path = csv_path
@@ -87,7 +87,7 @@ module JpAddressComplement
         each_csv_row { |row| append_record(row) }
       rescue Errno::ENOENT
         raise JpAddressComplement::Error, "CSV ファイルが見つかりません: #{@csv_path}"
-      rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError => e
+      rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError, CSV::InvalidEncodingError => e
         raise JpAddressComplement::Error, "CSV のエンコーディング変換に失敗しました: #{e.message}"
       end
 
@@ -99,7 +99,7 @@ module JpAddressComplement
 
       # @rbs () { (Array[String?]) -> void } -> void
       def each_csv_row(&)
-        CSV.foreach(@csv_path, encoding: 'Windows-31J:UTF-8', &)
+        CSV.foreach(@csv_path, encoding: 'UTF-8', &)
       end
 
       # @rbs (Array[String?] row) -> void

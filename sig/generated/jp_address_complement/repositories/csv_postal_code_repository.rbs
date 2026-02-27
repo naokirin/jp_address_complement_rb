@@ -2,18 +2,18 @@
 
 module JpAddressComplement
   module Repositories
-    # KEN_ALL 形式の CSV ファイルを直接読み込んで検索を行う Repository 実装
+    # UTF-8 版 KEN_ALL（utf_ken_all.csv）形式の CSV ファイルを直接読み込んで検索を行う Repository 実装
     #
     # - ActiveRecord や DB に依存せず、純粋に CSV から AddressRecord を構築する
     # - 初回アクセス時に CSV 全体を読み込み、インメモリでインデックスを構築する（2回目以降はメモリ検索のみ）
-    # - CSV は日本郵便公式の KEN_ALL.CSV と同じ列構成を前提とする
+    # - CSV は日本郵便公式の KEN_ALL.CSV（UTF-8 版 utf_ken_all.csv）と同じ列構成を前提とする
     #
     # 典型的な利用例:
     #
     #   require 'jp_address_complement/repositories/csv_postal_code_repository'
     #
     #   JpAddressComplement.configure do |c|
-    #     c.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new('/path/to/KEN_ALL.CSV')
+    #     c.repository = JpAddressComplement::Repositories::CsvPostalCodeRepository.new('/path/to/utf_ken_all.csv')
     #   end
     class CsvPostalCodeRepository < PostalCodeRepository
       # 列インデックス（KEN_ALL.CSV 形式）
@@ -40,7 +40,7 @@ module JpAddressComplement
       COL_IS_LARGE_OFFICE: ::Integer
 
       # @rbs (String csv_path) -> void
-      # @param csv_path [String] 読み込む KEN_ALL 形式 CSV のパス
+      # @param csv_path [String] 読み込む KEN_ALL 形式 UTF-8 CSV のパス
       def initialize: (String csv_path) -> void
 
       # @rbs (String code) -> Array[AddressRecord]

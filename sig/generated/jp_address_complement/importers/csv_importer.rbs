@@ -18,8 +18,8 @@ module JpAddressComplement
       def members: () -> [ :upserted, :deleted ]
     end
 
-    # KEN_ALL.CSV を読み込み、jp_address_complement_postal_codes テーブルに upsert する
-    # Shift_JIS 形式の CSV を自動で UTF-8 に変換して処理する
+    # UTF-8 版 KEN_ALL（utf_ken_all.csv）を読み込み、jp_address_complement_postal_codes テーブルに upsert する
+    # UTF-8 形式の CSV を前提として処理する
     class CsvImporter
       BATCH_SIZE: Integer
 

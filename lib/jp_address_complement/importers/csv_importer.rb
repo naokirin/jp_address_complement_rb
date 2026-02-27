@@ -12,8 +12,8 @@ module JpAddressComplement
     # @rbs type deleted = Integer
     ImportResult = Data.define(:upserted, :deleted)
 
-    # KEN_ALL.CSV を読み込み、jp_address_complement_postal_codes テーブルに upsert する
-    # Shift_JIS 形式の CSV を自動で UTF-8 に変換して処理する
+    # UTF-8 版 KEN_ALL（utf_ken_all.csv）を読み込み、jp_address_complement_postal_codes テーブルに upsert する
+    # UTF-8 形式の CSV を前提として処理する
     class CsvImporter
       BATCH_SIZE = 1000 #: Integer
 
@@ -83,7 +83,7 @@ module JpAddressComplement
         total_upserted = 0
         batch = [] #: Array[Hash[Symbol, untyped]]
 
-        CSV.foreach(@csv_path, encoding: 'Windows-31J:UTF-8') do |row|
+        CSV.foreach(@csv_path, encoding: 'UTF-8') do |row|
           record = parse_row(row)
           next if record.nil?
 

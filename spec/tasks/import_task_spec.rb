@@ -26,12 +26,12 @@ RSpec.describe 'jp_address_complement:import', :db do
     ENV.delete('DOWNLOAD')
   end
 
-  def build_sjis_csv(rows)
-    tf = Tempfile.new(['ken_all', '.csv'])
+  def build_utf8_csv(rows)
+    tf = Tempfile.new(['utf_ken_all', '.csv'])
     tf.binmode
     rows.each do |row|
       line = "#{Array(row).join(',')}\r\n"
-      tf.write(line.encode('Windows-31J', invalid: :replace, undef: :replace))
+      tf.write(line)
     end
     tf.close
     tf
@@ -41,7 +41,7 @@ RSpec.describe 'jp_address_complement:import', :db do
 
   describe 'タスク実行時（T013）' do
     it '標準出力に upserted/deleted 件数が含まれる' do
-      csv_file = build_sjis_csv([row_a])
+      csv_file = build_utf8_csv([row_a])
       ENV['CSV'] = csv_file.path
 
       stdout = nil
@@ -59,7 +59,7 @@ RSpec.describe 'jp_address_complement:import', :db do
 
   describe 'DOWNLOAD=1 の場合' do
     it 'KenAllDownloader で取得した CSV をインポートし、download_and_extract は1度だけ呼ばれる' do
-      csv_file = build_sjis_csv([row_a])
+      csv_file = build_utf8_csv([row_a])
       downloader = instance_double(
         JpAddressComplement::KenAllDownloader,
         download_and_extract: csv_file.path

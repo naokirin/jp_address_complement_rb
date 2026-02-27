@@ -1,0 +1,5 @@
+class CSV
+  class InvalidEncodingError < StandardError
+  end
+end
+
