@@ -36,6 +36,8 @@ module JpAddressComplement
     end
 
     # 郵便番号と住所文字列の整合性を検証する
+    # 日本郵便の utf_ken_all.csv は町域に「字」「大字」を含まないため、
+    # 市区町村の直後に「字」「大字」が付いた住所（省略可能な表記）も一致とみなす。
     # @rbs (String? postal_code, String? address) -> bool
     # @param postal_code [String, nil] 郵便番号
     # @param address [String, nil] 住所文字列
@@ -49,10 +51,7 @@ module JpAddressComplement
       records = @repository.find_by_code(normalized)
       return false if records.empty?
 
-      records.any? do |record|
-        full_address = record.pref + record.city + record.normalized_town.to_s
-        address.include?(full_address)
-      end
+      records.any? { |record| address_matches_record?(address, record) }
     end
 
     # 都道府県・市区町村・町域から郵便番号候補を取得する（逆引き）。町域は前方一致。
@@ -67,6 +66,20 @@ module JpAddressComplement
 
       records = @repository.find_postal_codes_by_address(pref: pref, city: city, town: town)
       records.map { |r| [r.postal_code, r] }
+    end
+
+    private
+
+    def address_matches_record?(address, record)
+      base = record.pref + record.city
+      town_part = record.normalized_town.to_s
+      full = base + town_part
+
+      return true if address.include?(full)
+      return false if town_part.empty?
+
+      # 日本郵便の CSV は町域に「字」「大字」を含まない。市区町村の直後に「字」「大字」が付いた表記は省略可能なため無視する。
+      address.include?(base + '大字' + town_part) || address.include?(base + '字' + town_part)
     end
   end
 end

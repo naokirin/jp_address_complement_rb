@@ -53,8 +53,25 @@ RSpec.describe JpAddressComplement::Searcher do
     )
   end
 
+  # 日本郵便 CSV は町域に「字」「大字」を含まない。ユーザーが「大字石神」と書いた場合の照合用
+  let(:kawaguchi_record) do
+    JpAddressComplement::AddressRecord.new(
+      postal_code: '3330823',
+      pref_code: '11',
+      pref: '埼玉県',
+      city: '川口市',
+      town: '石神',
+      kana_pref: 'サイタマケン',
+      kana_city: 'カワグチシ',
+      kana_town: 'イシガミ',
+      has_alias: false,
+      is_partial: false,
+      is_large_office: false
+    )
+  end
+
   let(:fake_repo) do
-    JpAddressComplement::FakePostalCodeRepository.new([tokyo_record, osaka_record, nil_town_record])
+    JpAddressComplement::FakePostalCodeRepository.new([tokyo_record, osaka_record, nil_town_record, kawaguchi_record])
   end
 
   describe '#search_by_postal_code', :us1 do
@@ -174,6 +191,26 @@ RSpec.describe JpAddressComplement::Searcher do
     context 'when town が nil のレコードの場合' do
       it 'NoMethodError を発生させず false を返す' do
         expect(searcher.valid_combination?('1060032', '東京都港区')).to be true
+      end
+    end
+
+    # 日本郵便の CSV は町域に「字」「大字」を含まない。市区町村の直後の「字」「大字」は省略可能な表記のため無視する
+    context 'when 住所に市区町村の直後に「大字」が付いている場合（省略可能表記）' do
+      it 'true を返し false positive にならない' do
+        expect(searcher.valid_combination?('3330823', '埼玉県川口市大字石神976')).to be true
+        expect(searcher.valid_combination?('3330823', '333-0823 埼玉県川口市大字石神976')).to be true
+      end
+    end
+
+    context 'when 住所に市区町村の直後に「字」が付いている場合（省略可能表記）' do
+      it 'true を返し false positive にならない' do
+        expect(searcher.valid_combination?('3330823', '埼玉県川口市字石神976')).to be true
+      end
+    end
+
+    context 'when 町域のみ（大字・字なし）の住所の場合' do
+      it '従来どおり true を返す' do
+        expect(searcher.valid_combination?('3330823', '埼玉県川口市石神976')).to be true
       end
     end
   end
