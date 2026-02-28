@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_02_23_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_28_083709) do
   create_table "jp_address_complement_postal_codes", force: :cascade do |t|
     t.string "city", limit: 50, null: false
     t.datetime "created_at", null: false
@@ -26,7 +26,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_02_23_000001) do
     t.string "town", limit: 100
     t.datetime "updated_at", null: false
     t.integer "version", default: 0, null: false
-    t.index ["postal_code", "pref_code", "city", "town"], name: "idx_jp_address_complement_unique", unique: true
+    t.index "postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,'')", name: "idx_jp_address_complement_unique", unique: true
     t.index ["postal_code"], name: "idx_jp_address_complement_postal_code"
     t.index ["version"], name: "idx_jp_address_complement_version"
   end

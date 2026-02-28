@@ -46,6 +46,7 @@ module DatabaseHelper
         DatabaseHelper.jp_address_columns(t)
         DatabaseHelper.jp_address_indexes(t)
       end
+      DatabaseHelper.add_unique_index_with_kana
     end
   end
 
@@ -66,11 +67,18 @@ module DatabaseHelper
   end
 
   def self.jp_address_indexes(table)
-    table.index :postal_code
-    table.index %i[postal_code pref_code city town],
-                unique: true,
-                name: 'idx_jp_address_complement_unique'
+    table.index :postal_code, name: 'idx_jp_address_complement_postal_code'
     table.index :version, name: 'idx_jp_address_complement_version'
+  end
+
+  # 同一の郵便番号・都道府県・市区町村・町域（漢字）でも読み（カナ）が異なれば別レコードとする
+  def self.add_unique_index_with_kana
+    conn = ActiveRecord::Base.connection
+    conn.execute(<<-SQL.squish)
+      CREATE UNIQUE INDEX idx_jp_address_complement_unique
+      ON jp_address_complement_postal_codes
+      (postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))
+    SQL
   end
 
   def self.clean

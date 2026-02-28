@@ -113,7 +113,10 @@ module JpAddressComplement
               postal_code: record[:postal_code],
               pref_code: record[:pref_code],
               city: record[:city],
-              town: record[:town]
+              town: record[:town],
+              kana_pref: record[:kana_pref],
+              kana_city: record[:kana_city],
+              kana_town: record[:kana_town]
             ).delete_all
           end
 
@@ -121,9 +124,18 @@ module JpAddressComplement
         end
       end
 
+      # 郵便番号・都道府県・市区町村・町域（漢字）が同じでも読み（カナ）が異なれば別レコードとして扱う
       # @rbs (Hash[Symbol, untyped] record) -> Array[String]
       def row_key(record)
-        [record[:postal_code].to_s, record[:pref_code].to_s, record[:city].to_s, (record[:town] || '').to_s]
+        [
+          record[:postal_code].to_s,
+          record[:pref_code].to_s,
+          record[:city].to_s,
+          (record[:town] || '').to_s,
+          (record[:kana_pref] || '').to_s,
+          (record[:kana_city] || '').to_s,
+          (record[:kana_town] || '').to_s
+        ]
       end
 
       # 今回のインポートより古いバージョンの行を一括削除し、削除件数を返す

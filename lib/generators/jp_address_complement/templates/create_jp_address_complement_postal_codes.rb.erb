@@ -19,10 +19,19 @@ class CreateJpAddressComplementPostalCodes < ActiveRecord::Migration[<%= ActiveR
     add_index :jp_address_complement_postal_codes, :postal_code,
               name: 'idx_jp_address_complement_postal_code'
 
-    add_index :jp_address_complement_postal_codes,
-              %i[postal_code pref_code city town],
-              unique: true,
-              name: 'idx_jp_address_complement_unique'
+    # 同一の郵便番号・都道府県・市区町村・町域（漢字）でも読み（カナ）が異なれば別レコードとする
+    reversible do |dir|
+      dir.up do
+        execute <<-SQL.squish
+          CREATE UNIQUE INDEX idx_jp_address_complement_unique
+          ON jp_address_complement_postal_codes
+          (postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))
+        SQL
+      end
+      dir.down do
+        remove_index :jp_address_complement_postal_codes, name: 'idx_jp_address_complement_unique'
+      end
+    end
 
     add_index :jp_address_complement_postal_codes, :version,
               name: 'idx_jp_address_complement_version'

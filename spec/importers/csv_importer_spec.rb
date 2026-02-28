@@ -100,6 +100,22 @@ RSpec.describe JpAddressComplement::Importers::CsvImporter, :db do
       end
     end
 
+    # 同一郵便番号・都道府県・市区町村・町域（漢字）でも読み（カナ）が異なれば別レコードとして扱う
+    context 'when 漢字は同じで読み（カナ）だけが異なる行が含まれる場合' do
+      it '読みが異なる行を別レコードとしてインポートする' do
+        # 兵庫県明石市和坂: カニガサカ と ワサカ の2通り
+        row_kanigasaki = %w[28102 673 6730012 ヒョウゴケン アカシシ カニガサカ 兵庫県 明石市 和坂 0 0 0 0 0 0]
+        row_wasaka = %w[28102 673 6730012 ヒョウゴケン アカシシ ワサカ 兵庫県 明石市 和坂 0 0 0 0 0 0]
+        csv = build_utf8_csv([row_kanigasaki, row_wasaka])
+        described_class.new(csv.path).import
+
+        expect(JpAddressComplement::PostalCode.count).to eq(2)
+        records = JpAddressComplement::PostalCode.where(postal_code: '6730012', city: '明石市',
+                                                        town: '和坂').order(:kana_town)
+        expect(records.pluck(:kana_town)).to eq(%w[カニガサカ ワサカ])
+      end
+    end
+
     context 'when upsert 途中で失敗した場合（T007）' do
       it '削除フェーズを実行せず既存データを維持する' do
         csv_abc = build_utf8_csv([row_a, row_b, row_c])

@@ -66,6 +66,7 @@ module JpAddressComplement
       # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def upsert_batch: (Array[Hash[Symbol, untyped]] batch) -> void
 
+      # 郵便番号・都道府県・市区町村・町域（漢字）が同じでも読み（カナ）が異なれば別レコードとして扱う
       # @rbs (Hash[Symbol, untyped] record) -> Array[String]
       def row_key: (Hash[Symbol, untyped] record) -> Array[String]
 
