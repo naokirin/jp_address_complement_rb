@@ -76,10 +76,12 @@ module DatabaseHelper
   def self.add_unique_index_with_kana
     conn = ActiveRecord::Base.connection
     unique_index_columns = if conn.adapter_name =~ /mysql/i
-      "(postal_code, pref_code, city, (COALESCE(town,'')), (COALESCE(kana_pref,'')), (COALESCE(kana_city,'')), (COALESCE(kana_town,'')))"
-    else
-      "(postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))"
-    end
+                             "(postal_code, pref_code, city, (COALESCE(town,'')), " \
+                               "(COALESCE(kana_pref,'')), (COALESCE(kana_city,'')), (COALESCE(kana_town,'')))"
+                           else
+                             "(postal_code, pref_code, city, COALESCE(town,''), " \
+                               "COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))"
+                           end
     conn.execute(<<-SQL.squish)
       CREATE UNIQUE INDEX idx_jp_address_complement_unique
       ON jp_address_complement_postal_codes
