@@ -20,6 +20,8 @@ module JpAddressComplement
     def search_by_postal_code_prefix: (String? prefix) -> Array[AddressRecord]
 
     # 郵便番号と住所文字列の整合性を検証する
+    # 日本郵便の utf_ken_all.csv は町域に「字」「大字」を含まないため、
+    # 市区町村の直後に「字」「大字」が付いた住所（省略可能な表記）も一致とみなす。
     # @rbs (String? postal_code, String? address) -> bool
     # @param postal_code [String, nil] 郵便番号
     # @param address [String, nil] 住所文字列
@@ -33,5 +35,9 @@ module JpAddressComplement
     # @param town [String, nil] 町域名。省略時は都道府県＋市区町村のみ。指定時は前方一致で候補を返す
     # @return [Array<[String, AddressRecord]>] [郵便番号, AddressRecord] の配列。該当なし・入力不十分時は []
     def search_postal_codes_by_address: (pref: String?, city: String?, ?town: String?) -> Array[[ String, AddressRecord ]]
+
+    private
+
+    def address_matches_record?: (untyped address, untyped record) -> untyped
   end
 end
