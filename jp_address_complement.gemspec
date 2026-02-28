@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = 'A Rails gem that provides Japanese address completion and validation ' \
                      'based on Japan Post postal code CSV data. Supports address lookup by ' \
                      'postal code, prefix search, and address/postal code consistency validation.'
-  spec.homepage = 'https://github.com/naokirin/jp_address_complement'
+  spec.homepage = 'https://github.com/naokirin/jp_address_complement_rb'
   spec.required_ruby_version = '>= 3.2.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
