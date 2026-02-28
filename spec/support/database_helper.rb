@@ -72,12 +72,18 @@ module DatabaseHelper
   end
 
   # 同一の郵便番号・都道府県・市区町村・町域（漢字）でも読み（カナ）が異なれば別レコードとする
+  # MySQL 8.0.13+ では式インデックスに各式を二重括弧で囲む必要がある
   def self.add_unique_index_with_kana
     conn = ActiveRecord::Base.connection
+    unique_index_columns = if conn.adapter_name =~ /mysql/i
+      "(postal_code, pref_code, city, (COALESCE(town,'')), (COALESCE(kana_pref,'')), (COALESCE(kana_city,'')), (COALESCE(kana_town,'')))"
+    else
+      "(postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))"
+    end
     conn.execute(<<-SQL.squish)
       CREATE UNIQUE INDEX idx_jp_address_complement_unique
       ON jp_address_complement_postal_codes
-      (postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))
+      #{unique_index_columns}
     SQL
   end
 

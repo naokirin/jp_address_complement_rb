@@ -22,10 +22,15 @@ class CreateJpAddressComplementPostalCodes < ActiveRecord::Migration[8.1]
     # 同一の郵便番号・都道府県・市区町村・町域（漢字）でも読み（カナ）が異なれば別レコードとする
     reversible do |dir|
       dir.up do
+        unique_index_columns = if connection.adapter_name =~ /mysql/i
+          "(postal_code, pref_code, city, (COALESCE(town,'')), (COALESCE(kana_pref,'')), (COALESCE(kana_city,'')), (COALESCE(kana_town,'')))"
+        else
+          "(postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))"
+        end
         execute <<-SQL.squish
           CREATE UNIQUE INDEX idx_jp_address_complement_unique
           ON jp_address_complement_postal_codes
-          (postal_code, pref_code, city, COALESCE(town,''), COALESCE(kana_pref,''), COALESCE(kana_city,''), COALESCE(kana_town,''))
+          #{unique_index_columns}
         SQL
       end
       dir.down do
