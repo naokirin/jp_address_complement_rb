@@ -79,7 +79,7 @@ module JpAddressComplement
       return false if town_part.empty?
 
       # 日本郵便の CSV は町域に「字」「大字」を含まない。市区町村の直後に「字」「大字」が付いた表記は省略可能なため無視する。
-      address.include?(base + '大字' + town_part) || address.include?(base + '字' + town_part)
+      address.include?("#{base}大字#{town_part}") || address.include?("#{base}字#{town_part}")
     end
   end
 end
