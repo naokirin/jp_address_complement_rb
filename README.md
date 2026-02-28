@@ -241,6 +241,15 @@ bundle exec rake rbs:generate        # sig/ を rbs-inline から生成
 bundle exec rake steep               # 型チェック（CI では exit 0 が必須）
 ```
 
+### RuboCop / RSpec
+
+コードスタイルのチェックとテストの実行は次のとおりです。
+
+```bash
+bundle exec rubocop
+bundle exec rspec
+```
+
 詳細は [specs/002-rbs-type-annotations/quickstart.md](specs/002-rbs-type-annotations/quickstart.md) を参照してください。
 
 ローカルに gem をインストールするには `bundle exec rake install` を実行します。新バージョンをリリースする場合は `lib/jp_address_complement/version.rb` のバージョンを更新し、`bundle exec rake release` でタグの作成・プッシュと [RubyGems.org](https://rubygems.org) への push が行われます。
