@@ -252,7 +252,22 @@ bundle exec rspec
 
 詳細は [specs/002-rbs-type-annotations/quickstart.md](specs/002-rbs-type-annotations/quickstart.md) を参照してください。
 
-ローカルに gem をインストールするには `bundle exec rake install` を実行します。新バージョンをリリースする場合は `lib/jp_address_complement/version.rb` のバージョンを更新し、`bundle exec rake release` でタグの作成・プッシュと [RubyGems.org](https://rubygems.org) への push が行われます。
+ローカルに gem をインストールするには `bundle exec rake install` を実行します。
+
+### リリース（RubyGems への公開）
+
+1. `lib/jp_address_complement/version.rb` のバージョン（例: `1.0.0`）を更新してコミット・push する。
+2. `v1.0.0` のように **v + バージョン** のタグを push する。
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+3. GitHub Actions の [Release to RubyGems](.github/workflows/release.yml) ワークフローが動き、[RubyGems.org](https://rubygems.org) に自動で公開される。
+
+**事前準備（リポジトリのオーナー／管理者向け）:**  
+[RubyGems.org の Trusted Publisher](https://guides.rubygems.org/trusted-publishing/adding-a-publisher/) を設定する。手順: [RubyGems.org のプロフィール](https://rubygems.org/profile/me) → 対象の gem → **Trusted publishers** → **Create** で、リポジトリオーナー・リポジトリ名・ワークフロー名（`release.yml`）を登録する。API キーや GitHub Secrets は不要。
 
 ## Contributing
 
