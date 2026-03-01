@@ -20,7 +20,8 @@ module JpAddressComplement
       postal_code = record.public_send(postal_code_field)
       address = record.public_send(address_field)
 
-      return if postal_code.blank? || address.blank?
+      return if (postal_code.nil? || postal_code.to_s.strip.empty?) ||
+                (address.nil? || address.to_s.strip.empty?)
 
       return if JpAddressComplement.valid_combination?(postal_code, address)
 

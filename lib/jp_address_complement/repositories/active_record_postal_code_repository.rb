@@ -39,7 +39,7 @@ module JpAddressComplement
         return nil if city.nil? || city.to_s.strip.empty?
 
         relation = postal_code_model.where(pref: pref, city: city)
-        return relation if town.blank?
+        return relation if town.nil? || town.to_s.strip.empty?
 
         pattern = "#{escape_like(town.to_s.strip)}%"
         relation.where('town LIKE ?', pattern)
