@@ -108,6 +108,46 @@ RSpec.describe JpAddressComplement::KenAllDownloader do
       end
     end
 
+    context 'when ZIP エントリがパストラバーサルを含む場合（Zip Slip 対策）' do
+      it 'パストラバーサルのエントリをスキップし CSV は正常に展開される' do
+        zip_path_on_disk = Tempfile.new(['spec_ken_all', '.zip']).tap(&:close).path
+        Zip::OutputStream.open(zip_path_on_disk) do |zos|
+          zos.put_next_entry('../../evil.txt')
+          zos.write('evil content')
+          zos.put_next_entry(JpAddressComplement::KenAllDownloader::CSV_FILENAME)
+          zos.write("col1,col2\n")
+        end
+
+        downloader = described_class.new('https://example.com/ken_all.zip')
+        allow(downloader).to receive(:download_zip).and_return(zip_path_on_disk)
+
+        csv_path = downloader.download_and_extract
+
+        expect(File.exist?(csv_path)).to be true
+        expect(File.read(csv_path)).to eq("col1,col2\n")
+      ensure
+        File.unlink(zip_path_on_disk) if zip_path_on_disk && File.exist?(zip_path_on_disk)
+      end
+
+      it 'パストラバーサルのエントリのみの場合は DownloadError を発生させる' do
+        zip_path_on_disk = Tempfile.new(['spec_ken_all', '.zip']).tap(&:close).path
+        Zip::OutputStream.open(zip_path_on_disk) do |zos|
+          zos.put_next_entry('../../evil.txt')
+          zos.write('evil content')
+        end
+
+        downloader = described_class.new('https://example.com/ken_all.zip')
+        allow(downloader).to receive(:download_zip).and_return(zip_path_on_disk)
+
+        expect { downloader.download_and_extract }.to raise_error(
+          JpAddressComplement::KenAllDownloader::DownloadError,
+          /ZIP 内に #{JpAddressComplement::KenAllDownloader::CSV_FILENAME} が見つかりません/
+        )
+      ensure
+        File.unlink(zip_path_on_disk) if zip_path_on_disk && File.exist?(zip_path_on_disk)
+      end
+    end
+
     context 'when zip が壊れている場合' do
       it 'DownloadError でラップして発生させる' do
         # body_io は Net::HTTPResponse の内部 API のため instance_double は使わない
