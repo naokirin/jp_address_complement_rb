@@ -187,12 +187,16 @@ JpAddressComplement.prefecture_code_from_name('東京都')
 都道府県・市区町村・町域を指定して、対応する郵便番号の一覧を取得します。
 
 ```ruby
-codes = JpAddressComplement.search_postal_codes_by_address(
+results = JpAddressComplement.search_postal_codes_by_address(
   pref: '東京都',
   city: '千代田区',
   town: '千代田'
 )
-# => ["1000001"] など、該当する郵便番号の配列
+# => [["1000001", #<JpAddressComplement::AddressRecord postal_code="1000001", pref="東京都", city="千代田区", town="千代田", ...>]]
+
+# 郵便番号のみが必要な場合
+results.map(&:first)
+# => ["1000001"]
 ```
 
 `town` は省略可能です。その場合は都道府県＋市区町村で検索されます。
