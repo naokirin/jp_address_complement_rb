@@ -26,6 +26,10 @@ module JpAddressComplement
       # バッチ削除・ユニークキーとして使うカラム群
       KEY_COLUMNS: Array[Symbol]
 
+      # SQLite のデフォルト式木深度制限（1000）対策。
+      # reduce(:or) で N 件 OR 結合すると深さ ≈ N + 6 になるため、500 件に収める（深さ ≈ 506）。
+      DELETE_CHUNK_SIZE: Integer
+
       # 列インデックス（KEN_ALL.CSV 形式）
       COL_PREF_CODE: Integer
 

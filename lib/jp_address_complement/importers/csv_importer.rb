@@ -126,9 +126,9 @@ module JpAddressComplement
       def batch_delete(batch)
         table = PostalCode.arel_table
         batch.each_slice(DELETE_CHUNK_SIZE) do |chunk|
-          conditions = chunk.map { |record|
+          conditions = chunk.map do |record|
             KEY_COLUMNS.map { |col| table[col].eq(record[col]) }.reduce(:and)
-          }.reduce(:or)
+          end.reduce(:or)
           PostalCode.where(conditions).delete_all
         end
       end
