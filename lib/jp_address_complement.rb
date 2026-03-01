@@ -9,8 +9,13 @@ require_relative 'jp_address_complement/repositories/postal_code_repository'
 require_relative 'jp_address_complement/searcher'
 require_relative 'jp_address_complement/prefecture'
 
-# Rails 環境でのみ Railtie をロード
-require_relative 'jp_address_complement/railtie' if defined?(Rails)
+# Rails が利用可能な場合のみ Railtie をロード（Gemfile に指定されていても require 前だと defined?(Rails) が false になり得るため、require を試す）
+begin
+  require 'rails'
+  require_relative 'jp_address_complement/railtie'
+rescue LoadError
+  # Rails が利用できない場合は Railtie をスキップ
+end
 
 module JpAddressComplement
   class Error < StandardError; end
@@ -31,10 +36,19 @@ module JpAddressComplement
       @configuration ||= Configuration.new
     end
 
-    # PostalCode モデルの継承元。未設定時は ActiveRecord::Base。configuration.postal_code_model_base に委譲する。
+    # PostalCode モデルの継承元。未設定時は ActiveRecord::Base（activerecord gem が利用可能な場合）。
+    # Gemfile に指定されていても require 前だと defined? が false になり得るため、未ロード時は require を試す。
     # @rbs () -> Class
     def base_record_class
-      configuration.postal_code_model_base || ActiveRecord::Base
+      base = configuration.postal_code_model_base
+      return base if base
+
+      require 'active_record'
+      ActiveRecord::Base
+    rescue LoadError => e
+      raise Error,
+            'ActiveRecord is not available. Add gem "activerecord" to your Gemfile, or set ' \
+            "JpAddressComplement.configuration.postal_code_model_base. (#{e.message})"
     end
 
     # @rbs (Class) -> void
@@ -124,6 +138,10 @@ module JpAddressComplement
       require_relative 'jp_address_complement/repositories/active_record_postal_code_repository'
       require_relative 'jp_address_complement/models/postal_code'
       Repositories::ActiveRecordPostalCodeRepository.new
+    rescue LoadError => e
+      raise Error,
+            'ActiveRecord is not loaded. Add gem "activerecord" to your Gemfile to use the default repository, ' \
+            "or set JpAddressComplement.configuration.repository to your own implementation. (#{e.message})"
     end
   end
 end
