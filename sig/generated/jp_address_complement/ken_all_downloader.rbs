@@ -40,6 +40,8 @@ module JpAddressComplement
     # @rbs (String zip_path, String tmpdir) -> String?
     def extract_zip_entries: (String zip_path, String tmpdir) -> String?
 
+    # ZIP エントリの展開先絶対パスを安全に解決する。
+    # entry_name に含まれる ../ などにより tmpdir の外を指す場合は nil を返す（Zip Slip 対策）。
     # @rbs (String tmpdir, String entry_name) -> String?
     def safe_extract_dest: (String tmpdir, String entry_name) -> String?
 
