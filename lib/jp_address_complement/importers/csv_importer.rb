@@ -20,6 +20,10 @@ module JpAddressComplement
       # バッチ削除・ユニークキーとして使うカラム群
       KEY_COLUMNS = %i[postal_code pref_code city town kana_pref kana_city kana_town].freeze #: Array[Symbol]
 
+      # SQLite のデフォルト式木深度制限（1000）対策。
+      # reduce(:or) で N 件 OR 結合すると深さ ≈ N + 6 になるため、500 件に収める（深さ ≈ 506）。
+      DELETE_CHUNK_SIZE = 500 #: Integer
+
       # 列インデックス（KEN_ALL.CSV 形式）
       COL_PREF_CODE = 0 #: Integer
       COL_POSTAL_CODE = 2 #: Integer
@@ -121,10 +125,12 @@ module JpAddressComplement
       # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def batch_delete(batch)
         table = PostalCode.arel_table
-        conditions = batch.map do |record|
-          KEY_COLUMNS.map { |col| table[col].eq(record[col]) }.reduce(:and)
-        end.reduce(:or)
-        PostalCode.where(conditions).delete_all
+        batch.each_slice(DELETE_CHUNK_SIZE) do |chunk|
+          conditions = chunk.map { |record|
+            KEY_COLUMNS.map { |col| table[col].eq(record[col]) }.reduce(:and)
+          }.reduce(:or)
+          PostalCode.where(conditions).delete_all
+        end
       end
 
       # 郵便番号・都道府県・市区町村・町域（漢字）が同じでも読み（カナ）が異なれば別レコードとして扱う
