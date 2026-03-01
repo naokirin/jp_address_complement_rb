@@ -17,6 +17,9 @@ module JpAddressComplement
     class CsvImporter
       BATCH_SIZE = 1000 #: Integer
 
+      # バッチ削除・ユニークキーとして使うカラム群
+      KEY_COLUMNS = %i[postal_code pref_code city town kana_pref kana_city kana_town].freeze #: Array[Symbol]
+
       # 列インデックス（KEN_ALL.CSV 形式）
       COL_PREF_CODE = 0 #: Integer
       COL_POSTAL_CODE = 2 #: Integer
@@ -108,20 +111,20 @@ module JpAddressComplement
       # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
       def upsert_batch(batch)
         PostalCode.transaction do
-          batch.each do |record|
-            PostalCode.where(
-              postal_code: record[:postal_code],
-              pref_code: record[:pref_code],
-              city: record[:city],
-              town: record[:town],
-              kana_pref: record[:kana_pref],
-              kana_city: record[:kana_city],
-              kana_town: record[:kana_town]
-            ).delete_all
-          end
-
+          batch_delete(batch)
           PostalCode.upsert_all(batch)
         end
+      end
+
+      # バッチ内の全レコードを1クエリで一括削除する
+      # Arel を使うことで NULL カラム（town 等）を IS NULL として正しく扱う
+      # @rbs (Array[Hash[Symbol, untyped]] batch) -> void
+      def batch_delete(batch)
+        table = PostalCode.arel_table
+        conditions = batch.map do |record|
+          KEY_COLUMNS.map { |col| table[col].eq(record[col]) }.reduce(:and)
+        end.reduce(:or)
+        PostalCode.where(conditions).delete_all
       end
 
       # 郵便番号・都道府県・市区町村・町域（漢字）が同じでも読み（カナ）が異なれば別レコードとして扱う
