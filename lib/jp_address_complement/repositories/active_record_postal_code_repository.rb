@@ -35,11 +35,11 @@ module JpAddressComplement
 
       # @rbs (pref: String?, city: String?, ?town: String?) -> untyped
       def address_relation(pref:, city:, town: nil)
-        return nil if pref.nil? || pref.to_s.strip.empty?
-        return nil if city.nil? || city.to_s.strip.empty?
+        return nil if pref.to_s.strip.empty?
+        return nil if city.to_s.strip.empty?
 
         relation = postal_code_model.where(pref: pref, city: city)
-        return relation if town.nil? || town.to_s.strip.empty?
+        return relation if town.to_s.strip.empty?
 
         pattern = "#{escape_like(town.to_s.strip)}%"
         relation.where('town LIKE ?', pattern)
