@@ -4,6 +4,7 @@
 require 'csv'
 require_relative '../address_record'
 require_relative '../models/postal_code'
+require_relative '../ken_all'
 
 module JpAddressComplement
   module Importers
@@ -15,20 +16,9 @@ module JpAddressComplement
     # UTF-8 版 KEN_ALL（utf_ken_all.csv）を読み込み、jp_address_complement_postal_codes テーブルに upsert する
     # UTF-8 形式の CSV を前提として処理する
     class CsvImporter
-      BATCH_SIZE = 1000 #: Integer
+      include KenAll
 
-      # 列インデックス（KEN_ALL.CSV 形式）
-      COL_PREF_CODE = 0 #: Integer
-      COL_POSTAL_CODE = 2 #: Integer
-      COL_KANA_PREF = 3 #: Integer
-      COL_KANA_CITY = 4 #: Integer
-      COL_KANA_TOWN = 5 #: Integer
-      COL_PREF = 6 #: Integer
-      COL_CITY = 7 #: Integer
-      COL_TOWN = 8 #: Integer
-      COL_IS_PARTIAL = 9 #: Integer
-      COL_HAS_ALIAS = 12 #: Integer
-      COL_IS_LARGE_OFFICE = 13 #: Integer
+      BATCH_SIZE = 1000 #: Integer
 
       # @rbs (String csv_path) -> void
       def initialize(csv_path)
