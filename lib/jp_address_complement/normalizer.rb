@@ -21,7 +21,7 @@ module JpAddressComplement
       # @param code [String, nil] 郵便番号文字列（ハイフン・全角・〒記号を自動除去）
       # @return [String, nil] 正規化後の7桁郵便番号。不正な場合は nil
       def normalize_postal_code(code)
-        return nil if code.blank?
+        return nil if code.nil? || code.strip.empty?
 
         normalized = normalize_string(code)
         return nil unless normalized.match?(DIGIT_ONLY)
@@ -34,7 +34,7 @@ module JpAddressComplement
       # @param prefix [String, nil] 郵便番号の先頭部分（4桁以上）
       # @return [String, nil] 正規化後の数字文字列。4桁未満または不正な場合は nil
       def normalize_prefix(prefix)
-        return nil if prefix.blank?
+        return nil if prefix.nil? || prefix.strip.empty?
 
         normalized = normalize_string(prefix)
         return nil if normalized.empty?

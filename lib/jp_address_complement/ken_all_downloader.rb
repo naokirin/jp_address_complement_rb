@@ -94,19 +94,33 @@ module JpAddressComplement
     def extract_zip_entries(zip_path, tmpdir)
       csv_path = nil
       Zip::File.open(zip_path) do |zip_file|
-        Dir.chdir(tmpdir) do
-          zip_file.each do |entry|
-            name = entry.name.delete_prefix('/')
-            dir = File.dirname(name)
-            FileUtils.mkdir_p(dir) unless dir == '.'
-            # RubyZip::Entry#extract(dest_path = nil) を使い、既存ファイルがあればブロックで上書き許可する。
-            entry.extract(name) { true } # steep:ignore
-            dest = File.join(tmpdir, name)
-            csv_path = dest if entry_csv?(name, dest)
-          end
+        zip_file.each do |entry|
+          dest = safe_extract_dest(tmpdir, entry.name)
+          next if dest.nil? || dest == tmpdir # パストラバーサルの可能性があるエントリはスキップ
+
+          FileUtils.mkdir_p(File.dirname(dest))
+          # RubyZip 3.x: 第1引数は destination_directory 配下への相対パス、
+          # destination_directory: で展開先ディレクトリを指定する。
+          # safe_extract_dest で検証済みの相対パスを渡し、パストラバーサルを多層防御する。
+          relative_path = dest[(tmpdir.length + 1)..]
+          entry.extract(relative_path, destination_directory: tmpdir) { true } # steep:ignore
+          csv_path = dest if entry_csv?(entry.name, dest)
         end
       end
       csv_path
+    end
+
+    # ZIP エントリの展開先絶対パスを安全に解決する。
+    # entry_name に含まれる ../ などにより tmpdir の外を指す場合は nil を返す（Zip Slip 対策）。
+    # @rbs (String tmpdir, String entry_name) -> String?
+    def safe_extract_dest(tmpdir, entry_name)
+      # 先頭の / を除去して相対パスとして扱い、File.expand_path で ../ を解決する
+      relative = entry_name.delete_prefix('/')
+      dest = File.expand_path(File.join(tmpdir, relative))
+      # tmpdir 配下に収まるエントリのみ許可する
+      return nil unless dest.start_with?("#{tmpdir}#{File::SEPARATOR}") || dest == tmpdir
+
+      dest
     end
 
     # @rbs (String entry_name, String dest) -> bool

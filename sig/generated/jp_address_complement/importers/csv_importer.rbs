@@ -21,7 +21,7 @@ module JpAddressComplement
     # UTF-8 版 KEN_ALL（utf_ken_all.csv）を読み込み、jp_address_complement_postal_codes テーブルに upsert する
     # UTF-8 形式の CSV を前提として処理する
     class CsvImporter
-      BATCH_SIZE: Integer
+      include KenAll
 
       # バッチ削除・ユニークキーとして使うカラム群
       KEY_COLUMNS: Array[Symbol]
@@ -30,28 +30,7 @@ module JpAddressComplement
       # reduce(:or) で N 件 OR 結合すると深さ ≈ N + 6 になるため、500 件に収める（深さ ≈ 506）。
       DELETE_CHUNK_SIZE: Integer
 
-      # 列インデックス（KEN_ALL.CSV 形式）
-      COL_PREF_CODE: Integer
-
-      COL_POSTAL_CODE: Integer
-
-      COL_KANA_PREF: Integer
-
-      COL_KANA_CITY: Integer
-
-      COL_KANA_TOWN: Integer
-
-      COL_PREF: Integer
-
-      COL_CITY: Integer
-
-      COL_TOWN: Integer
-
-      COL_IS_PARTIAL: Integer
-
-      COL_HAS_ALIAS: Integer
-
-      COL_IS_LARGE_OFFICE: Integer
+      BATCH_SIZE: Integer
 
       # @rbs (String csv_path) -> void
       def initialize: (String csv_path) -> void

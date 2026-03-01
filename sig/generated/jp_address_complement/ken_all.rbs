@@ -1,0 +1,33 @@
+# Generated from lib/jp_address_complement/ken_all.rb with RBS::Inline
+
+module JpAddressComplement
+  # UTF-8 版 KEN_ALL（utf_ken_all.csv）のフォーマット定数
+  #
+  # CSV の各列インデックスを定義する。include することでクラス内から直接参照できる。
+  #
+  # 参考: https://www.post.japanpost.jp/zipcode/dl/readme.html
+  module KenAll
+    # 列インデックス（KEN_ALL.CSV 形式）
+    COL_PREF_CODE: ::Integer
+
+    COL_POSTAL_CODE: ::Integer
+
+    COL_KANA_PREF: ::Integer
+
+    COL_KANA_CITY: ::Integer
+
+    COL_KANA_TOWN: ::Integer
+
+    COL_PREF: ::Integer
+
+    COL_CITY: ::Integer
+
+    COL_TOWN: ::Integer
+
+    COL_IS_PARTIAL: ::Integer
+
+    COL_HAS_ALIAS: ::Integer
+
+    COL_IS_LARGE_OFFICE: ::Integer
+  end
+end
