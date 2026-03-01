@@ -17,7 +17,8 @@ module JpAddressComplement
   # @return [Configuration]
   def self.configuration: () -> Configuration
 
-  # PostalCode モデルの継承元。未設定時は ActiveRecord::Base。configuration.postal_code_model_base に委譲する。
+  # PostalCode モデルの継承元。未設定時は ActiveRecord::Base（activerecord gem が利用可能な場合）。
+  # Gemfile に指定されていても require 前だと defined? が false になり得るため、未ロード時は require を試す。
   # @rbs () -> Class
   def self.base_record_class: () -> Class
 

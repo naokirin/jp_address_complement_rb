@@ -2,9 +2,7 @@ PATH
   remote: ../../..
   specs:
     jp_address_complement (0.1.0)
-      activerecord (>= 7.0)
       csv (>= 3.0)
-      railties (>= 7.0)
       rubyzip (>= 2.3)
 
 GEM

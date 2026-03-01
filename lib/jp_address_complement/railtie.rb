@@ -14,6 +14,8 @@ module JpAddressComplement
     end
 
     initializer 'jp_address_complement.setup_repository' do # steep:ignore
+      next unless defined?(ActiveRecord)
+
       require_relative 'repositories/active_record_postal_code_repository'
       require_relative 'models/postal_code'
       JpAddressComplement.configuration.repository ||=

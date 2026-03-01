@@ -31,14 +31,14 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activerecord', '>= 7.0'
   spec.add_dependency 'csv', '>= 3.0'
-  spec.add_dependency 'railties', '>= 7.0'
   spec.add_dependency 'rubyzip', '>= 2.3'
 
+  spec.add_development_dependency 'activerecord', '>= 7.0'
   spec.add_development_dependency 'generator_spec', '~> 0.10'
   spec.add_development_dependency 'mysql2'
   spec.add_development_dependency 'pg'
+  spec.add_development_dependency 'railties', '>= 7.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rbs-inline', '~> 0.13'
   spec.add_development_dependency 'rbs_rails', '~> 0.13'

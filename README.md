@@ -26,8 +26,7 @@
 ## 必要環境
 
 - Ruby 3.2 以上
-- Rails 7.1 以上
-- ActiveRecord 利用を前提としています
+- **デフォルトの DB 利用（ActiveRecord）を使う場合のみ**: Rails 7.0 以上および `activerecord` gem（Rails アプリでは通常含まれる）。使わない場合は不要です。
 
 ## インストール
 
@@ -39,13 +38,24 @@
 gem 'jp_address_complement'
 ```
 
+**デフォルトの ActiveRecord リポジトリを使う場合（DB に郵便番号テーブルを置く場合）**  
+本 gem は `activerecord` を必須依存にしていません。Rails アプリでは `gem 'rails'` に含まれるため追加不要です。Rails を使わずに ActiveRecord だけ使う場合は、利用者側で `Gemfile` に `activerecord` を追加してください。
+
+```ruby
+gem 'jp_address_complement'
+gem 'activerecord', '>= 7.0'   # デフォルトリポジトリを使う場合のみ
+```
+
+**CSV リポジトリや自前リポジトリだけ使う場合**  
+`JpAddressComplement.configure { |c| c.repository = ... }` でリポジトリを設定すれば、`activerecord` は不要です。gem の追加だけで利用できます。
+
 Bundler を使わない場合:
 
 ```bash
 gem install jp_address_complement
 ```
 
-### 2. テーブルの作成
+### 2. テーブルの作成（デフォルトの ActiveRecord リポジトリを使う場合）
 
 郵便番号データを格納するマイグレーションを生成し、マイグレートします。
 
@@ -54,7 +64,7 @@ rails g jp_address_complement:install
 rails db:migrate
 ```
 
-### 3. 住所データのインポート
+### 3. 住所データのインポート（デフォルトの ActiveRecord リポジトリを使う場合）
 
 日本郵便の KEN_ALL 形式 CSV（UTF-8 版 `utf_ken_all.csv`）をインポートする必要があります。
 

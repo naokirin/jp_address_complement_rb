@@ -2,9 +2,7 @@ PATH
   remote: .
   specs:
     jp_address_complement (0.1.0)
-      activerecord (>= 7.0)
       csv (>= 3.0)
-      railties (>= 7.0)
       rubyzip (>= 2.3)
 
 GEM
@@ -267,10 +265,12 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activerecord (>= 7.0)
   generator_spec (~> 0.10)
   jp_address_complement!
   mysql2
   pg
+  railties (>= 7.0)
   rake (~> 13.0)
   rbs-inline (~> 0.13)
   rbs_rails (~> 0.13)
