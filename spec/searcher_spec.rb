@@ -162,6 +162,14 @@ RSpec.describe JpAddressComplement::Searcher do
       end
     end
 
+    # 変更挙動: 町域なしの住所（都道府県＋市区町村のみ）も一致とみなす
+    context 'when 住所が都道府県・市区町村のみ（町域省略）の場合' do
+      it '町域なしの住所も一致とみなして true を返す' do
+        expect(searcher.valid_combination?('1000001', '東京都千代田区')).to be true
+        expect(searcher.valid_combination?('3330823', '埼玉県川口市')).to be true
+      end
+    end
+
     context 'when 郵便番号と住所が一致しない場合' do
       it 'false を返す' do
         expect(searcher.valid_combination?('1000001', '大阪府大阪市北区梅田')).to be false
